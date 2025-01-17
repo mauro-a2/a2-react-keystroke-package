@@ -57,5 +57,10 @@
     "tsdx": "^0.14.1",
     "tslib": "^2.8.1",
     "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@area2-ai/a2-node-keystroke-package": "^0.1.2",
+    "axios": "^1.7.9",
+    "react-device-detect": "^2.2.3"
   }
 }
