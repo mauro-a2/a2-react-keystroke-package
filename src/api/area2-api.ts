@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const a2API = axios.create({
-    baseURL: 'https://default.demo.area2-ai.com',
+    baseURL: process.env.A2_BASE_URL,
     headers: {
         "Content-Type": 'application/json'
     }

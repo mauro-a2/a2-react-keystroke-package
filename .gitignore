@@ -13,9 +13,10 @@ dist
 dist-ssr
 *.local
 .cache
+example
 
 .env
-
+.env.test
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
