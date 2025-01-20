@@ -1,12 +1,32 @@
 {
-  "version": "0.1.0",
+  "name": "@area2-ai/a2-react-keystroke-package",
+  "version": "0.0.0",
+  "type": "module",
+  "author": "Mauro Ruiz",
+  "module": "dist/a2-react-keystroke-package.esm.js",
+  "keywords": [
+    "react",
+    "hook",
+    "keystroke",
+    "keyboard",
+    "area2",
+    "a2"
+  ],
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
+  "homepage": "https://docs.area2-ai.com/",
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "engines": {
     "node": ">=10"
   },
@@ -17,10 +37,10 @@
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",
-    "analyze": "size-limit --why"
-  },
-  "peerDependencies": {
-    "react": ">=16"
+    "analyze": "size-limit --why",
+    "push:npm": "np",
+    "login:npm": "npm login",
+    "test-who": "npm whoami"
   },
   "husky": {
     "hooks": {
@@ -33,9 +53,6 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "a2-react-keystroke-package",
-  "author": "Mauro Ruiz",
-  "module": "dist/a2-react-keystroke-package.esm.js",
   "size-limit": [
     {
       "path": "dist/a2-react-keystroke-package.cjs.production.min.js",
@@ -46,21 +63,26 @@
       "limit": "10 KB"
     }
   ],
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "axios": ">=1.7.9 <1.8.0"
+  },
   "devDependencies": {
+    "axios": "^1.7.9",
     "@size-limit/preset-small-lib": "^11.1.6",
-    "@types/react": "^19.0.6",
-    "@types/react-dom": "^19.0.3",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
     "husky": "^9.1.7",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "size-limit": "^11.1.6",
     "tsdx": "^0.14.1",
     "tslib": "^2.8.1",
-    "typescript": "^5.7.3"
+    "typescript": "~5.6.2"
   },
   "dependencies": {
     "@area2-ai/a2-node-keystroke-package": "^0.1.2",
-    "axios": "^1.7.9",
     "react-device-detect": "^2.2.3"
   }
 }
