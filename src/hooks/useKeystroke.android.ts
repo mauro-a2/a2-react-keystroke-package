@@ -8,6 +8,9 @@ import { getReducedNeuroprofile } from "../api";
 
 /**
  * Keystroke for android mobile browser
+ * @param {string} userUID - The unique identifier of the user for whom the neuroprofile is generated.
+ * @param {string} userToken - A token used for authentication or authorization purposes.
+ * @returns {Object} - An object containing the text input, input change handler, keydown handler, keyup handler, paste handler, before input handler, key input handler, and getNeuroprofile function.
  */
 export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) => {
 
@@ -19,24 +22,42 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
     const [textInput, setTextInput] = useState("");
 
 
+    /**
+     * Handles the before input event.
+     * @param {string} currentValue - The current value of the input before the input event.
+     */
     const handleBeforeInput = useCallback((currentValue: string) => {
         if (!canAccess) { return }
         keystrokeManagerRef.current.processBeforeInput(currentValue, textInput);
     }, [canAccess, textInput]);
 
 
+    /**
+     * Handles the paste event.
+     * @param {ClipboardEvent<HTMLInputElement>} event - The paste event.
+     */
     const handlePaste = useCallback((event: ClipboardEvent<HTMLInputElement>) => {
         if (!canAccess) { return }
         const pastedText = event.clipboardData.getData("text");
         keystrokeManagerRef.current.processPaste(pastedText);
     }, [canAccess]);
 
+
+    /**
+     * Handles the input change event
+     * @param {ChangeEvent<HTMLInputElement>} event - The input change event
+     */
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target.value;
         if (!canAccess) { return }
         setTextInput(newValue);
     }
 
+
+    /**
+     * Handles the submission of typing data and retrieves the neuroprofile.
+     * @returns {Promise<IKeystrokeResult | undefined>} - A promise that resolves to the keystroke result or undefined if the submission is skipped.
+     */
     const handleSubmit = useCallback(async (): Promise<IKeystrokeResult | undefined> => {
         if (isSending) return;
 
@@ -79,18 +100,31 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
 
         return { data: neuroProfileResp.neuroprofile! };
     }, [isSending, userToken, userUID]);
+    
 
+    /**
+     * Handles the key input event.
+     * @param {string} inputContent - The content of the key input.
+     */
     const handleKeyInput = useCallback((inputContent: string) => {
         if (!canAccess) { return }
         keystrokeManagerRef.current.processKeyInput(inputContent);
     }, [canAccess]);
 
 
+    /**
+     * Handles the keydown event.
+     * @param {HTMLInputElement} target - The target input element.
+     */
     const handleKeydown = useCallback(async (target: HTMLInputElement) => {
         if (!canAccess) { return }
         keystrokeManagerRef.current.processKeydown(target);
     }, [canAccess]);
 
+
+    /**
+     * Handles the keyup event.
+     */
     const handleKeyup = useCallback(() => {
         if (!canAccess) { return }
         keystrokeManagerRef.current.processKeyup();

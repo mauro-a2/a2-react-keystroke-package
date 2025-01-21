@@ -8,6 +8,9 @@ import type { IKeystrokeResult } from "../interfaces";
 
 /**
  * Keystroke for desktop browsers
+ * @param {string} userUID - The unique identifier of the user for whom the neuroprofile is generated.
+ * @param {string} userToken - A token used for authentication or authorization purposes.
+ * @returns {Object} - An object containing the text input, input change handler, keydown handler, keyup handler, typing session status, and getNeuroprofile function.
  */
 export const useKeystroke = (userUID: string, userToken: string) => {
 
@@ -23,6 +26,10 @@ export const useKeystroke = (userUID: string, userToken: string) => {
         console.log('Make sure to provide a valid access key.');
     }
 
+    /**
+     * Handles the input change event
+     * @param {ChangeEvent<HTMLInputElement>} event - The input change event
+     */
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (!canAccess) {
             promptAccessWarning();
@@ -33,6 +40,10 @@ export const useKeystroke = (userUID: string, userToken: string) => {
         setTextInput(newValue);
     };
 
+    /**
+     * Handles the submission of typing data and retrieves the neuroprofile.
+     * @returns {Promise<IKeystrokeResult | undefined>} - A promise that resolves to the keystroke result or undefined if the submission is skipped.
+     */
     const handleSubmit = useCallback(async (): Promise<IKeystrokeResult | undefined> => {
         if (isSending) return;
 
@@ -80,6 +91,10 @@ export const useKeystroke = (userUID: string, userToken: string) => {
         return { data: neuroProfileResp.neuroprofile! };
     }, [isSending, userToken, userUID]);
 
+    /**
+     * Handles the keydown event.
+     * @param {string} key - The key that was pressed.
+     */
     const handleKeydown = useCallback((key: string) => {
         if (!canAccess) {
             promptAccessWarning();
@@ -88,6 +103,10 @@ export const useKeystroke = (userUID: string, userToken: string) => {
         keystrokeManagerRef.current.processKeydown(key);
     }, [canAccess]);
 
+    /**
+     * Handles the keyup event.
+     * @param {string} key - The key that was released.
+     */
     const handleKeyup = useCallback((key: string) => {
         if (!canAccess) {
             promptAccessWarning();
