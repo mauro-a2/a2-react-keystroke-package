@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useReducer } from 'react';
 import { Area2Context, area2Reducer } from '.';
-import { ICredentialsConfig } from '../../interfaces';
+import { validateDevAccessKey } from '../../api';
+import type { ICredentialsConfig } from '../../interfaces';
 
 export interface Area2State {
     canAccess: boolean;
@@ -19,7 +20,7 @@ export const Area2Provider = ({ children, config }: Props) => {
 
     const [state, dispatch] = useReducer(area2Reducer, AREA2_INITIAL_STATE);
 
-    const validateAccessToken = useCallback(() => {
+    const validateAccessToken = useCallback(async () => {
 
         const { apiKey } = config;
 
@@ -28,8 +29,14 @@ export const Area2Provider = ({ children, config }: Props) => {
             return;
         }
 
-        //TODO: Validate api key here
-        console.log(apiKey);
+        const response = await validateDevAccessKey(apiKey);
+
+        if(!response.ok) {
+            dispatch({ type: '[A2 Auth] - Deny Access' });
+            console.warn(`Error validating access key: ${response.error}`);
+            return;
+        }
+
         dispatch({ type: '[A2 Auth] - Allow Access' });
     }, [config]);
 
