@@ -22,7 +22,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
     const [isSending, setIsSending] = useState(false);
 
     const promptAccessWarning = () => {
-        console.warn('You are not authorized to access the hook.');
+        console.warn('You are not authorized to use the hook.');
         console.log('Make sure to provide a valid access key.');
     }
 

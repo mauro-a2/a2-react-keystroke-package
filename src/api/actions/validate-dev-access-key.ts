@@ -33,7 +33,6 @@ export const validateDevAccessKey = async (devAccessKey: string): Promise<CheckA
         }
     } catch (error) {
         const err = error as AxiosError<CheckAccessKeyResponse>;
-        console.log({ err })
         console.error('Error: ', err.message);
         return {
             ok: false,
