@@ -47,6 +47,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
     const handleSubmit = useCallback(async (): Promise<IKeystrokeResult | undefined> => {
         if (isSending) return;
 
+        setTextInput("");
         setIsSending(true);
 
         const typingData = keystrokeManagerRef.current.endTypingSession();
@@ -65,7 +66,6 @@ export const useKeystroke = (userUID: string, userToken: string) => {
         if (!userToken || !userUID) {
             console.warn("User credentials not found. Skipping save... ");
             keystrokeManagerRef.current.resetTypingData();
-            setTextInput("");
             setIsSending(false);
             return {
                 error: 'User credentials not found.',
@@ -76,7 +76,6 @@ export const useKeystroke = (userUID: string, userToken: string) => {
         const neuroProfileResp = await getReducedNeuroprofile(userUID, userToken, typingData);
 
         keystrokeManagerRef.current.resetTypingData();
-        setTextInput("");
         setIsSending(false);
 
         if (!neuroProfileResp.ok) {
