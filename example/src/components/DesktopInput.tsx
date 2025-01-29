@@ -1,14 +1,7 @@
-import { useKeystroke } from '@area2-ai/a2-react-keystroke-package';
+import { A2TextInput, useKeystroke } from '@area2-ai/a2-react-keystroke-package';
 
 export const DesktopInput = () => {
-    const {
-        handleInputChange,
-        handleKeydown,
-        handleKeyup,
-        textInput,
-        getNeuroprofile,
-        isTypingSessionActive
-    } = useKeystroke('user-id-here', 'user-token-here');
+    const { getNeuroprofile } = useKeystroke('user-id', 'user-token');
 
     const handleSubmit = async () => {
 
@@ -23,27 +16,16 @@ export const DesktopInput = () => {
 
         if (!neuroResponse.data) return;
 
-        console.log(`Neuroprofile: ${neuroResponse.data}`);
+        console.log(`Neuroprofile: ${JSON.stringify(neuroResponse.data)}`);
     }
 
     return (
         <div>
-            <input
-                type="text"
-                placeholder="Using desktop collection"
-
-                onKeyDownCapture={({ key }) => handleKeydown(key)}
-                onKeyUpCapture={({ key }) => {
-                    handleKeyup(key);
-
-                    //? Handle ENTER key
-                    if (key !== 'Enter') { return }
-                    if (!isTypingSessionActive) { return }
-                    handleSubmit();
-                }}
-
-                value={textInput}
-                onChange={handleInputChange}
+            <A2TextInput
+                userID='user-id'
+                userToken='user-token'
+                handleSubmitOnEnter={handleSubmit}
+                style={{ width: '300px' }}
             />
             <button onClick={handleSubmit}>Send</button>
         </div>

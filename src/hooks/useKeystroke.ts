@@ -1,5 +1,4 @@
-import { ChangeEvent, useCallback, useContext, useRef, useState } from "react";
-import { KeystrokeManager } from "@area2-ai/a2-node-keystroke-package";
+import { ChangeEvent, useCallback, useContext, useState } from "react";
 
 import { Area2Context } from "../context";
 import { getBrowserInfo, getOsInfo } from "../utils";
@@ -14,12 +13,12 @@ import type { IKeystrokeResult } from "../interfaces";
  */
 export const useKeystroke = (userUID: string, userToken: string) => {
 
-    const keystrokeManagerRef = useRef(new KeystrokeManager());
-
-    const { canAccess } = useContext(Area2Context);
+    const { canAccess, getKeystrokeManager } = useContext(Area2Context);
 
     const [textInput, setTextInput] = useState("");
     const [isSending, setIsSending] = useState(false);
+
+    const getIsTypingSessionActive = () => getKeystrokeManager().getIsTypingSessionActive;
 
     const promptAccessWarning = () => {
         console.warn('You are not authorized to use the hook.');
@@ -36,7 +35,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
             return;
         }
         const newValue = event.target.value;
-        keystrokeManagerRef.current.processInputChange(newValue);
+        getKeystrokeManager().processInputChange(newValue);
         setTextInput(newValue);
     };
 
@@ -50,7 +49,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
         setTextInput("");
         setIsSending(true);
 
-        const typingData = keystrokeManagerRef.current.endTypingSession();
+        const typingData = getKeystrokeManager().endTypingSession();
 
         if (!typingData.startUnixTime) {
             console.log(`Empty typing data for session: ${typingData.sessionID}. Skipping...`);
@@ -65,7 +64,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
 
         if (!userToken || !userUID) {
             console.warn("User credentials not found. Skipping save... ");
-            keystrokeManagerRef.current.resetTypingData();
+            getKeystrokeManager().resetTypingData();
             setIsSending(false);
             return {
                 error: 'User credentials not found.',
@@ -75,7 +74,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
 
         const neuroProfileResp = await getReducedNeuroprofile(userUID, userToken, typingData);
 
-        keystrokeManagerRef.current.resetTypingData();
+        getKeystrokeManager().resetTypingData();
         setIsSending(false);
 
         if (!neuroProfileResp.ok) {
@@ -99,7 +98,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
             promptAccessWarning();
             return;
         }
-        keystrokeManagerRef.current.processKeydown(key);
+        getKeystrokeManager().processKeydown(key);
     }, [canAccess]);
 
     /**
@@ -111,7 +110,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
             promptAccessWarning();
             return;
         }
-        keystrokeManagerRef.current.processKeyup(key);
+        getKeystrokeManager().processKeyup(key);
     }, [canAccess]);
 
     return {
@@ -119,7 +118,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
         handleInputChange,
         handleKeydown,
         handleKeyup,
-        isTypingSessionActive: keystrokeManagerRef.current.getIsTypingSessionActive,
+        getIsTypingSessionActive,
         getNeuroprofile: handleSubmit
     };
 };
