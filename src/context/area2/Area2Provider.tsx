@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useReducer, useRef } from 'react';
-import { KeystrokeManager } from '@area2-ai/a2-node-keystroke-package';
+import {
+    KeystrokeManager,
+    AndroidKeystrokeManager,
+    IosKeystrokeManager
+} from '@area2-ai/a2-node-keystroke-package';
 
 import { Area2Context, area2Reducer } from '.';
 import { validateDevAccessKey } from '../../api';
@@ -23,8 +27,12 @@ export const Area2Provider = ({ children, config }: Props) => {
     const [state, dispatch] = useReducer(area2Reducer, AREA2_INITIAL_STATE);
 
     const keystrokeManagerRef = useRef<KeystrokeManager>();
+    const androidKeystrokeManagerRef = useRef<AndroidKeystrokeManager>();
+    const iosKeystrokeManagerRef = useRef<IosKeystrokeManager>();
 
     const getKeystrokeManager = () => keystrokeManagerRef.current!;
+    const getAndroidKeystrokeManager = () => androidKeystrokeManagerRef.current!;
+    const getIosKeystrokeManager = () => iosKeystrokeManagerRef.current!;
 
     const validateAccessToken = useCallback(async () => {
 
@@ -52,6 +60,8 @@ export const Area2Provider = ({ children, config }: Props) => {
 
     useEffect(() => {
         keystrokeManagerRef.current = new KeystrokeManager();
+        androidKeystrokeManagerRef.current = new AndroidKeystrokeManager();
+        iosKeystrokeManagerRef.current = new IosKeystrokeManager();
     }, []);
 
     return (
@@ -60,6 +70,8 @@ export const Area2Provider = ({ children, config }: Props) => {
 
             //Methods
             getKeystrokeManager,
+            getAndroidKeystrokeManager,
+            getIosKeystrokeManager,
         }}>
             {children}
         </Area2Context.Provider>

@@ -1,5 +1,4 @@
-import { ClipboardEvent, ChangeEvent, useCallback, useState, useRef, useContext } from "react";
-import { AndroidKeystrokeManager } from "@area2-ai/a2-node-keystroke-package";
+import { ClipboardEvent, ChangeEvent, useCallback, useState, useContext } from "react";
 
 import { Area2Context } from "../context";
 import { getBrowserInfo, getOsInfo } from "../utils";
@@ -14,9 +13,7 @@ import { getReducedNeuroprofile } from "../api";
  */
 export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) => {
 
-    const keystrokeManagerRef = useRef(new AndroidKeystrokeManager());
-
-    const { canAccess } = useContext(Area2Context);
+    const { canAccess, getAndroidKeystrokeManager } = useContext(Area2Context);
 
     const [isSending, setIsSending] = useState(false);
     const [textInput, setTextInput] = useState("");
@@ -28,7 +25,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
      */
     const handleBeforeInput = useCallback((currentValue: string) => {
         if (!canAccess) { return }
-        keystrokeManagerRef.current.processBeforeInput(currentValue, textInput);
+        getAndroidKeystrokeManager().processBeforeInput(currentValue, textInput);
     }, [canAccess, textInput]);
 
 
@@ -39,7 +36,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
     const handlePaste = useCallback((event: ClipboardEvent<HTMLInputElement>) => {
         if (!canAccess) { return }
         const pastedText = event.clipboardData.getData("text");
-        keystrokeManagerRef.current.processPaste(pastedText);
+        getAndroidKeystrokeManager().processPaste(pastedText);
     }, [canAccess]);
 
 
@@ -64,7 +61,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
         setTextInput("");
         setIsSending(true);
 
-        const typingData = keystrokeManagerRef.current.endTypingSession();
+        const typingData = getAndroidKeystrokeManager().endTypingSession();
 
         if (!typingData.startUnixTime) {
             setIsSending(false);
@@ -77,7 +74,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
         typingData.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;
 
         if (!userToken || !userUID) {
-            keystrokeManagerRef.current.resetTypingData();
+            getAndroidKeystrokeManager().resetTypingData();
             setIsSending(false);
             return {
                 error: 'User credentials not found.',
@@ -87,7 +84,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
 
         const neuroProfileResp = await getReducedNeuroprofile(userUID, userToken, typingData);
 
-        keystrokeManagerRef.current.resetTypingData();
+        getAndroidKeystrokeManager().resetTypingData();
         setIsSending(false);
 
         if (!neuroProfileResp.ok) {
@@ -99,7 +96,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
 
         return { data: neuroProfileResp.neuroprofile! };
     }, [isSending, userToken, userUID]);
-    
+
 
     /**
      * Handles the key input event.
@@ -107,7 +104,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
      */
     const handleKeyInput = useCallback((inputContent: string) => {
         if (!canAccess) { return }
-        keystrokeManagerRef.current.processKeyInput(inputContent);
+        getAndroidKeystrokeManager().processKeyInput(inputContent);
     }, [canAccess]);
 
 
@@ -117,7 +114,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
      */
     const handleKeydown = useCallback(async (target: HTMLInputElement) => {
         if (!canAccess) { return }
-        keystrokeManagerRef.current.processKeydown(target);
+        getAndroidKeystrokeManager().processKeydown(target);
     }, [canAccess]);
 
 
@@ -126,7 +123,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
      */
     const handleKeyup = useCallback(() => {
         if (!canAccess) { return }
-        keystrokeManagerRef.current.processKeyup();
+        getAndroidKeystrokeManager().processKeyup();
     }, [canAccess]);
 
     return {

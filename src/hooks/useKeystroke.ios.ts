@@ -1,5 +1,4 @@
-import { ClipboardEvent, ChangeEvent, useCallback, useEffect, useState, useRef, useContext } from "react";
-import { IosKeystrokeManager } from "@area2-ai/a2-node-keystroke-package";
+import { ClipboardEvent, ChangeEvent, useCallback, useEffect, useState, useContext } from "react";
 
 import { Area2Context } from "../context";
 import { getBrowserInfo, getOsInfo } from "../utils";
@@ -14,9 +13,7 @@ import type { IKeystrokeResult } from "../interfaces";
  */
 export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
 
-    const keystrokeManagerRef = useRef(new IosKeystrokeManager());
-
-    const { canAccess } = useContext(Area2Context);
+    const { canAccess, getIosKeystrokeManager } = useContext(Area2Context);
 
     const [textInput, setTextInput] = useState("");
     const [isSending, setIsSending] = useState(false);
@@ -27,7 +24,7 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
      */
     const handleOnBeforeInput = useCallback((value: number) => {
         if (!canAccess) { return }
-        keystrokeManagerRef.current.setPrevContentLength = value;
+        getIosKeystrokeManager().setPrevContentLength = value;
     }, [canAccess]);
 
     /**
@@ -37,12 +34,13 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
     const handlePaste = useCallback((event: ClipboardEvent<HTMLInputElement>) => {
         if (!canAccess) { return }
         const pastedText = event.clipboardData.getData("text");
-        keystrokeManagerRef.current.processPaste(pastedText);
+        getIosKeystrokeManager().processPaste(pastedText);
     }, [canAccess]);
 
-    useEffect(() => {
-        keystrokeManagerRef.current.processAutocorrection(textInput);
-    }, [textInput]);
+    const processAutocorrection = () => {
+        if (!getIosKeystrokeManager()) { return }
+        getIosKeystrokeManager().processAutocorrection(textInput);
+    }
 
 
     /**
@@ -52,7 +50,7 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
     const checkForPrediction = useCallback((newValue: string) => {
         const textSnapshot = textInput; // Before it changes
         if (!canAccess) { return }
-        keystrokeManagerRef.current.processPrediction(newValue, textSnapshot);
+        getIosKeystrokeManager().processPrediction(newValue, textSnapshot);
     }, [canAccess, textInput]);
 
 
@@ -78,7 +76,7 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
         setTextInput("");
         setIsSending(true);
 
-        const typingData = keystrokeManagerRef.current.endTypingSession();
+        const typingData = getIosKeystrokeManager().endTypingSession();
 
         if (!typingData.startUnixTime) {
             setIsSending(false);
@@ -91,7 +89,7 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
         typingData.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;
 
         if (!userToken || !userUID) {
-            keystrokeManagerRef.current.resetTypingData();
+            getIosKeystrokeManager().resetTypingData();
             setIsSending(false);
             return {
                 error: 'User credentials not found.',
@@ -101,7 +99,7 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
 
         const neuroProfileResp = await getReducedNeuroprofile(userUID, userToken, typingData);
 
-        keystrokeManagerRef.current.resetTypingData();
+        getIosKeystrokeManager().resetTypingData();
         setIsSending(false);
 
         if (!neuroProfileResp.ok) {
@@ -121,7 +119,7 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
      */
     const handleKeydown = useCallback((keyPressed: string, target: HTMLInputElement) => {
         if (!canAccess) { return }
-        keystrokeManagerRef.current.processKeydown(keyPressed, target);
+        getIosKeystrokeManager().processKeydown(keyPressed, target);
     }, [canAccess]);
 
 
@@ -131,8 +129,12 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
      */
     const handleKeyup = useCallback((keyPressed: string) => {
         if (!canAccess) { return }
-        keystrokeManagerRef.current.processKeyup(keyPressed);
+        getIosKeystrokeManager().processKeyup(keyPressed);
     }, [canAccess]);
+
+    useEffect(() => {
+        processAutocorrection();
+    }, [textInput]);
 
     return {
         textInput,
@@ -141,7 +143,6 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
         handleKeyup,
         handlePaste,
         handleOnBeforeInput,
-        isTypingSessionActive: keystrokeManagerRef.current.getIsTypingSessionActive,
         getNeuroprofile: handleSubmit
     }
 

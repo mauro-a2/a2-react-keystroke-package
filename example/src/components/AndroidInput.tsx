@@ -1,17 +1,8 @@
-import { useMobileKeystrokeAndroid } from '@area2-ai/a2-react-keystroke-package';
+import { useMobileKeystrokeAndroid, A2AndroidTextInput } from '@area2-ai/a2-react-keystroke-package';
 
 export const AndroidInput = () => {
 
-    const {
-        handleInputChange,
-        textInput,
-        handleKeydown,
-        handleKeyup,
-        handlePaste,
-        getNeuroprofile,
-        handleKeyInput,
-        handleBeforeInput
-    } = useMobileKeystrokeAndroid('user-id-here', 'user-token-here');
+    const { getNeuroprofile } = useMobileKeystrokeAndroid('user-id', 'user-token');
 
     const handleSubmit = async () => {
 
@@ -26,26 +17,15 @@ export const AndroidInput = () => {
 
         if (!neuroResponse.data) return;
 
-        console.log(`Neuroprofile: ${neuroResponse.data}`);
+        alert(`Neuroprofile: ${neuroResponse.data.current_state.behavioral}`);
     }
-
 
     return (
         <div>
-            <input
-                type="text"
-                placeholder="Using android mobile input"
-                autoCapitalize="sentences"
-
-                onKeyDown={({ currentTarget }) => handleKeydown(currentTarget)}
-                onKeyUp={handleKeyup}
-
-                value={textInput}
-                onChange={handleInputChange}
-
-                onPaste={handlePaste}
-                onInput={({ currentTarget }) => { handleKeyInput(currentTarget.value) }}
-                onBeforeInput={({ currentTarget }) => handleBeforeInput(currentTarget.value)}
+            <A2AndroidTextInput
+                userID='user-id'
+                userToken='user-token'
+                style={{ width: '300px' }}
             />
             <button onClick={handleSubmit}>Send</button>
         </div>
