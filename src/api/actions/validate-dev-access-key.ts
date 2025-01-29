@@ -1,4 +1,3 @@
-import type { AxiosError } from "axios";
 import a2DevAccessAPI from "../dev-access-api";
 import type { IA2DevAccessKeyResponse } from "../../interfaces/IA2DevAccessKeyResponse";
 
@@ -14,14 +13,14 @@ export type CheckAccessKeyResponse = {
  */
 export const validateDevAccessKey = async (devAccessKey: string): Promise<CheckAccessKeyResponse> => {
     try {
-        const { data } = await a2DevAccessAPI.get<IA2DevAccessKeyResponse>('/check-client-access-key', {
+        const response = await a2DevAccessAPI.get<IA2DevAccessKeyResponse>('/check-client-access-key', {
             headers: {
                 Authorization: `Bearer ${devAccessKey}`
             }
         });
 
-        if (!data.success) {
-            const { error } = data;
+        if (!response.success) {
+            const { error } = response;
             return {
                 ok: false,
                 error,
@@ -29,14 +28,13 @@ export const validateDevAccessKey = async (devAccessKey: string): Promise<CheckA
         }
 
         return {
-            ok: data.success,
+            ok: response.success,
         }
     } catch (error) {
-        const err = error as AxiosError<CheckAccessKeyResponse>;
-        console.error('Error: ', err.message);
+        console.error('Error: ', (error as any).message);
         return {
             ok: false,
-            error: err.response?.data.error || err.message
+            error: (error as any).response?.data.error || (error as any).message
         }
     }
 }

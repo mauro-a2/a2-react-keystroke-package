@@ -1,4 +1,3 @@
-import type { AxiosError } from "axios";
 import type { IKeystrokeCollection, IMobileKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import type { IA2APIResponse, IA2ChatbotResults } from "../../interfaces";
@@ -43,34 +42,33 @@ export const getReducedNeuroprofile = async (
     }
 
     try {
-        const { data } = await a2API.post<IA2APIResponse>('/get_reduced_neuroprofile', dataToSend, {
+        const response = await a2API.post<IA2APIResponse>('/get_reduced_neuroprofile', dataToSend, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
 
-        if (data.status === 'error') {
-            const { error, message } = data;
+        if (response.status === 'error') {
+            const { error, message } = response;
             return {
                 ok: false,
-                error,
-                message
+                error: error || 'Error',
+                message: `Error when connecting to api, reason: ${message}`,
             }
         }
 
-        const { results } = data;
+        const { results } = response;
 
         return {
             ok: true,
             neuroprofile: results!.a2_chatbot,
         }
     } catch (error) {
-        const err = error as AxiosError;
-        console.error('Error when connecting to api: ', err.message);
+        console.error('Error when connecting to api: ', (error as any).message);
         return {
             ok: false,
             message: 'Error when connecting to api',
-            error: err.message
+            error: (error as any).message
         }
     }
 
