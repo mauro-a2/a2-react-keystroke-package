@@ -65,11 +65,11 @@ export const getReducedNeuroprofile = async (
             neuroprofile: results!.a2_chatbot,
         }
     } catch (error) {
-        const err = error as AxiosError;
+        const err = error as AxiosError<NeuroprofileResponse>;
         console.error('Error when connecting to api: ', err.message);
         return {
             ok: false,
-            message: 'Error when connecting to api',
+            message: `Error when connecting to api, reason: ${err.response?.data.message}`,
             error: err.message
         }
     }
