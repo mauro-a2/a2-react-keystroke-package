@@ -22,7 +22,7 @@ export const DesktopInput = () => {
     return (
         <div>
             <A2TextInput
-                userID='user-id'
+                userUID='user-id'
                 userToken='user-token'
                 handleSubmitOnEnter={handleSubmit}
                 style={{ width: '300px' }}

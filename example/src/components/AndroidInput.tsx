@@ -23,7 +23,7 @@ export const AndroidInput = () => {
     return (
         <div>
             <A2AndroidTextInput
-                userID='user-id'
+                userUID='user-id'
                 userToken='user-token'
                 style={{ width: '300px' }}
             />

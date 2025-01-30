@@ -23,7 +23,7 @@ export const IosInput = () => {
     return (
         <div>
             <A2IosTextInput
-                userID='user-id'
+                userUID='user-id'
                 userToken='user-token'
                 style={{ width: '300px' }}
             />

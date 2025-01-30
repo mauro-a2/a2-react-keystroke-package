@@ -2,7 +2,7 @@ import React from 'react';
 import { useMobileKeystrokeAndroid } from '../hooks';
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-    userID: string;
+    userUID: string;
     userToken: string;
 }
 
@@ -10,10 +10,10 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
  * Component that renders an input field for Android mobile devices
  * with keystroke tracking and additional event handlers.
  *
- * @param {string} userID - The ID of the user.
+ * @param {string} userUID - The ID of the user.
  * @param {string} userToken - The token of the user.
  */
-export const A2AndroidTextInput = ({ userID, userToken, ...rest }: Props) => {
+export const A2AndroidTextInput = ({ userUID: userID, userToken, ...rest }: Props) => {
 
     const {
         handleInputChange,
