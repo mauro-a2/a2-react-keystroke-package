@@ -137,7 +137,7 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
     }, [textInput]);
 
     return {
-        textInput,
+        value: textInput,
         handleInputChange,
         handleKeydown,
         handleKeyup,

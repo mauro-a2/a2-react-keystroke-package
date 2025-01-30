@@ -17,7 +17,7 @@ export const A2IosTextInput = ({ userID, userToken, ...rest }: Props) => {
 
     const {
         handleInputChange,
-        textInput,
+        value,
         handleKeydown,
         handleKeyup,
         handlePaste,
@@ -33,7 +33,7 @@ export const A2IosTextInput = ({ userID, userToken, ...rest }: Props) => {
                 onKeyDownCapture={({ key, currentTarget }) => handleKeydown(key, currentTarget)}
                 onKeyUpCapture={({ key }) => handleKeyup(key)}
 
-                value={textInput}
+                value={value}
                 onChange={handleInputChange}
                 onPaste={handlePaste}
                 onBeforeInput={({ currentTarget }) => { handleOnBeforeInput(currentTarget.value.length) }}

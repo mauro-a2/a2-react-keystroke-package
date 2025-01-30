@@ -21,7 +21,7 @@ export const A2TextInput = ({ userID, userToken, handleSubmitOnEnter, ...rest }:
         handleInputChange,
         handleKeydown,
         handleKeyup,
-        textInput,
+        value,
         getIsTypingSessionActive,
     } = useKeystroke(userID, userToken);
 
@@ -43,7 +43,7 @@ export const A2TextInput = ({ userID, userToken, handleSubmitOnEnter, ...rest }:
                     handleSubmitOnEnter();
                 }}
 
-                value={textInput}
+                value={value}
                 onChange={handleInputChange}
                 {...rest}
             />

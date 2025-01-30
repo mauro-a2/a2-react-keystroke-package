@@ -114,7 +114,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
     }, [canAccess]);
 
     return {
-        textInput,
+        value: textInput,
         handleInputChange,
         handleKeydown,
         handleKeyup,

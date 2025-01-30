@@ -17,7 +17,7 @@ export const A2AndroidTextInput = ({ userID, userToken, ...rest }: Props) => {
 
     const {
         handleInputChange,
-        textInput,
+        value,
         handleKeydown,
         handleKeyup,
         handlePaste,
@@ -35,7 +35,7 @@ export const A2AndroidTextInput = ({ userID, userToken, ...rest }: Props) => {
                 onKeyDown={({ currentTarget }) => handleKeydown(currentTarget)}
                 onKeyUp={handleKeyup}
 
-                value={textInput}
+                value={value}
                 onChange={handleInputChange}
 
                 onPaste={handlePaste}
