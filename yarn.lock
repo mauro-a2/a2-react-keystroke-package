@@ -10,10 +10,10 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@area2-ai/a2-node-keystroke-package@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@area2-ai/a2-node-keystroke-package/-/a2-node-keystroke-package-0.1.2.tgz#b9935423c354a1d453b032be48046ef0934d1a0d"
-  integrity sha512-DdwYPzZmcYCt2NewPfzSPe6QW7XK7qLlP4c+vQQ9T2d2rIq+jVFxoqP2PG8sNSvuRB04oeJBGwrddoM/6VfeuQ==
+"@area2-ai/a2-node-keystroke-package@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@area2-ai/a2-node-keystroke-package/-/a2-node-keystroke-package-0.2.0.tgz#22c1bac82a5b514d2b80f4921e5070e49443e839"
+  integrity sha512-0fsDkuyCtF93Ien4+cejCh1bOJkwnAT6pa0/lvyR1uo8KtP8xkA/zd1VU6xVkPzcGNXe69XolKGBPPnrtK+r3w==
   dependencies:
     emoji-regex "^10.4.0"
     uuid "^11.0.4"
