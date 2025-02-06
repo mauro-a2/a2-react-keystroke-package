@@ -13,9 +13,13 @@ import type { IKeystrokeResult } from "../interfaces";
  */
 export const useKeystroke = (userUID: string, userToken: string) => {
 
-    const { canAccess, getKeystrokeManager } = useContext(Area2Context);
+    const {
+        canAccess,
+        getKeystrokeManager,
+        desktopTextValue,
+        setDesktopTextValue
+    } = useContext(Area2Context);
 
-    const [textInput, setTextInput] = useState("");
     const [isSending, setIsSending] = useState(false);
 
     const getIsTypingSessionActive = () => getKeystrokeManager().getIsTypingSessionActive;
@@ -36,7 +40,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
         }
         const newValue = event.target.value;
         getKeystrokeManager().processInputChange(newValue);
-        setTextInput(newValue);
+        setDesktopTextValue(newValue);
     };
 
     /**
@@ -46,7 +50,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
     const handleSubmit = useCallback(async (): Promise<IKeystrokeResult | undefined> => {
         if (isSending) return;
 
-        setTextInput("");
+        setDesktopTextValue("");
         setIsSending(true);
 
         const typingData = getKeystrokeManager().endTypingSession();
@@ -114,7 +118,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
     }, [canAccess]);
 
     return {
-        value: textInput,
+        value: desktopTextValue,
         handleInputChange,
         handleKeydown,
         handleKeyup,

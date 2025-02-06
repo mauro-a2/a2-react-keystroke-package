@@ -7,11 +7,17 @@ import type {
 
 interface ContextProps {
     canAccess: boolean;
+    desktopTextValue: string;
+    iOSTextValue: string;
+    androidTextValue: string;
 
     //Methods
     getKeystrokeManager: () => KeystrokeManager;
     getAndroidKeystrokeManager: () => AndroidKeystrokeManager;
     getIosKeystrokeManager: () => IosKeystrokeManager;
+    setDesktopTextValue: (value: string) => void;
+    setIOSTextValue: (value: string) => void;
+    setAndroidTextValue: (value: string) => void;
 }
 
 export const Area2Context = createContext({} as ContextProps);

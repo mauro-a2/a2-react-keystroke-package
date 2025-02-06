@@ -13,10 +13,14 @@ import { getReducedNeuroprofile } from "../api";
  */
 export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) => {
 
-    const { canAccess, getAndroidKeystrokeManager } = useContext(Area2Context);
+    const {
+        canAccess,
+        getAndroidKeystrokeManager,
+        androidTextValue,
+        setAndroidTextValue
+    } = useContext(Area2Context);
 
     const [isSending, setIsSending] = useState(false);
-    const [textInput, setTextInput] = useState("");
 
 
     /**
@@ -25,8 +29,8 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
      */
     const handleBeforeInput = useCallback((currentValue: string) => {
         if (!canAccess) { return }
-        getAndroidKeystrokeManager().processBeforeInput(currentValue, textInput);
-    }, [canAccess, textInput]);
+        getAndroidKeystrokeManager().processBeforeInput(currentValue, androidTextValue);
+    }, [canAccess, androidTextValue]);
 
 
     /**
@@ -47,7 +51,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target.value;
         if (!canAccess) { return }
-        setTextInput(newValue);
+        setAndroidTextValue(newValue);
     }
 
 
@@ -58,7 +62,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
     const handleSubmit = useCallback(async (): Promise<IKeystrokeResult | undefined> => {
         if (isSending) return;
 
-        setTextInput("");
+        setAndroidTextValue("");
         setIsSending(true);
 
         const typingData = getAndroidKeystrokeManager().endTypingSession();
@@ -127,7 +131,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
     }, [canAccess]);
 
     return {
-        value: textInput,
+        value: androidTextValue,
         handleInputChange,
         handleKeydown,
         handleKeyup,
