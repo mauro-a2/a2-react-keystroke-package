@@ -73,6 +73,7 @@
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "husky": "^9.1.7",
+    "np": "^10.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rollup-plugin-dotenv": "^0.5.1",
