@@ -490,6 +490,8 @@ cd .\example\
 
 yarn
 
+yarn add @area2-ai/a2-react-keystroke-package
+
 yarn dev
 ```
 

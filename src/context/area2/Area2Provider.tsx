@@ -11,6 +11,9 @@ import type { ICredentialsConfig } from '../../interfaces';
 
 export interface Area2State {
     canAccess: boolean;
+    desktopTextValue: string;
+    iOSTextValue: string;
+    androidTextValue: string;
 }
 
 interface Props {
@@ -20,6 +23,9 @@ interface Props {
 
 const AREA2_INITIAL_STATE: Area2State = {
     canAccess: false,
+    desktopTextValue: '',
+    androidTextValue: '',
+    iOSTextValue: ''
 }
 
 export const Area2Provider = ({ children, config }: Props) => {
@@ -54,6 +60,18 @@ export const Area2Provider = ({ children, config }: Props) => {
         dispatch({ type: '[A2 Auth] - Allow Access' });
     }, [config]);
 
+    const setDesktopTextValue = useCallback((value: string) => {
+        dispatch({ type: '[A2 Desktop] - Update text', payload: { newValue: value } })
+    }, []);
+
+    const setIOSTextValue = useCallback((value: string) => {
+        dispatch({ type: '[A2 iOS] - Update text', payload: { newValue: value } })
+    }, []);
+
+    const setAndroidTextValue = useCallback((value: string) => {
+        dispatch({ type: '[A2 Android] - Update text', payload: { newValue: value } })
+    }, []);
+
     useEffect(() => {
         validateAccessToken();
     }, [validateAccessToken]);
@@ -72,6 +90,9 @@ export const Area2Provider = ({ children, config }: Props) => {
             getKeystrokeManager,
             getAndroidKeystrokeManager,
             getIosKeystrokeManager,
+            setDesktopTextValue,
+            setIOSTextValue,
+            setAndroidTextValue
         }}>
             {children}
         </Area2Context.Provider>

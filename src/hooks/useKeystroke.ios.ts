@@ -13,9 +13,13 @@ import type { IKeystrokeResult } from "../interfaces";
  */
 export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
 
-    const { canAccess, getIosKeystrokeManager } = useContext(Area2Context);
+    const {
+        canAccess,
+        getIosKeystrokeManager,
+        iOSTextValue,
+        setIOSTextValue
+    } = useContext(Area2Context);
 
-    const [textInput, setTextInput] = useState("");
     const [isSending, setIsSending] = useState(false);
 
     /**
@@ -39,7 +43,7 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
 
     const processAutocorrection = () => {
         if (!getIosKeystrokeManager()) { return }
-        getIosKeystrokeManager().processAutocorrection(textInput);
+        getIosKeystrokeManager().processAutocorrection(iOSTextValue);
     }
 
 
@@ -48,10 +52,10 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
      * @param {string} newValue - The new value of the text input.
      */
     const checkForPrediction = useCallback((newValue: string) => {
-        const textSnapshot = textInput; // Before it changes
+        const textSnapshot = iOSTextValue; // Before it changes
         if (!canAccess) { return }
         getIosKeystrokeManager().processPrediction(newValue, textSnapshot);
-    }, [canAccess, textInput]);
+    }, [canAccess, iOSTextValue]);
 
 
     /**
@@ -62,7 +66,7 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
         const newValue = event.target.value;
         if (!canAccess) { return }
         checkForPrediction(newValue);
-        setTextInput(newValue);
+        setIOSTextValue(newValue);
     }
 
 
@@ -73,7 +77,7 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
     const handleSubmit = useCallback(async (): Promise<IKeystrokeResult | undefined> => {
         if (isSending) return;
 
-        setTextInput("");
+        setIOSTextValue("");
         setIsSending(true);
 
         const typingData = getIosKeystrokeManager().endTypingSession();
@@ -134,10 +138,10 @@ export const useMobileKeystrokeIOS = (userUID: string, userToken: string) => {
 
     useEffect(() => {
         processAutocorrection();
-    }, [textInput]);
+    }, [iOSTextValue]);
 
     return {
-        value: textInput,
+        value: iOSTextValue,
         handleInputChange,
         handleKeydown,
         handleKeyup,
