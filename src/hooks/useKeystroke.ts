@@ -76,7 +76,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
             };
         }
 
-        const neuroProfileResp = await getReducedNeuroprofile(userUID, userToken, typingData);
+        const neuroProfileResp = await getReducedNeuroprofile(userUID, userToken, typingData, 'Desktop');
 
         getKeystrokeManager().resetTypingData();
         setIsSending(false);

@@ -86,7 +86,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
             };
         }
 
-        const neuroProfileResp = await getReducedNeuroprofile(userUID, userToken, typingData);
+        const neuroProfileResp = await getReducedNeuroprofile(userUID, userToken, typingData, 'Mobile');
 
         getAndroidKeystrokeManager().resetTypingData();
         setIsSending(false);
