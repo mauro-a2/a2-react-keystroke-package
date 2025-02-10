@@ -12,6 +12,7 @@ export interface IA2APIResponse {
 export interface IA2ApiResults {
     a2_chatbot?:   IA2ChatbotResults;
     a2_extension?: IA2ExtensionResults;
+    default?:      IA2DefaultResults;
 }
 
 export interface IA2ChatbotResults {
@@ -75,4 +76,9 @@ export interface ISelfCompareScores {
     average_pos: number;
     current_pos: number;
     iqr_range:   number[];
+}
+
+export interface IA2DefaultResults {
+    timestamp:  string;
+    user_id:    string;
 }

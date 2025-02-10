@@ -1,11 +1,11 @@
 import { A2TextInput, useKeystroke } from '@area2-ai/a2-react-keystroke-package';
 
 export const DesktopInput = () => {
-    const { getNeuroprofile } = useKeystroke('user-id', 'user-token');
+    const { getNeuroprofile } = useKeystroke();
 
     const handleSubmit = async () => {
 
-        const neuroResponse = await getNeuroprofile();
+        const neuroResponse = await getNeuroprofile('user-id', 'user-token', "chatbot");
 
         if (!neuroResponse) return;
 
@@ -22,8 +22,6 @@ export const DesktopInput = () => {
     return (
         <div>
             <A2TextInput
-                userUID='user-id'
-                userToken='user-token'
                 handleSubmitOnEnter={handleSubmit}
                 style={{ width: '300px' }}
             />

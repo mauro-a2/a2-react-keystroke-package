@@ -2,11 +2,11 @@ import { useMobileKeystrokeIOS, A2IosTextInput } from '@area2-ai/a2-react-keystr
 
 export const IosInput = () => {
 
-    const { getNeuroprofile } = useMobileKeystrokeIOS('user-id', 'user-token');
+    const { getNeuroprofile } = useMobileKeystrokeIOS();
 
     const handleSubmit = async () => {
 
-        const neuroResponse = await getNeuroprofile();
+        const neuroResponse = await getNeuroprofile('user-id', 'user-token');
 
         if (!neuroResponse) return;
 
@@ -23,8 +23,6 @@ export const IosInput = () => {
     return (
         <div>
             <A2IosTextInput
-                userUID='user-id'
-                userToken='user-token'
                 style={{ width: '300px' }}
             />
             <button onClick={handleSubmit}>Send</button>

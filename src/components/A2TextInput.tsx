@@ -2,20 +2,15 @@ import React from 'react';
 import { useKeystroke } from '../hooks';
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-    userUID: string;
-    userToken: string;
     handleSubmitOnEnter?: () => Promise<void>;
 }
 
 /**
  * Component that renders an input field
  * with keystroke tracking and optional submit on Enter key functionality.
- *
- * @param {string} userUID - The ID of the user.
- * @param {string} userToken - The token of the user.
  * @param {() => Promise<void>} [handleSubmitOnEnter] - Optional function to handle submit on Enter key press.
  */
-export const A2TextInput = ({ userUID, userToken, handleSubmitOnEnter, ...rest }: Props) => {
+export const A2TextInput = ({ handleSubmitOnEnter, ...rest }: Props) => {
 
     const {
         handleInputChange,
@@ -23,7 +18,7 @@ export const A2TextInput = ({ userUID, userToken, handleSubmitOnEnter, ...rest }
         handleKeyup,
         value,
         getIsTypingSessionActive,
-    } = useKeystroke(userUID, userToken);
+    } = useKeystroke();
 
 
     return (

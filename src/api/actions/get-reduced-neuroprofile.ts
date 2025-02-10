@@ -2,8 +2,9 @@ import type { AxiosError } from "axios";
 import type { IKeystrokeCollection, IMobileKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import a2API from "../area2-api";
+import { a2Actions } from "../../constants";
 import { formatKeystrokeData } from "../../helpers";
-import type { IA2APIResponse, IA2ChatbotResults } from "../../interfaces";
+import type { A2ActionTypes, IA2APIResponse, IA2ChatbotResults } from "../../interfaces";
 
 export type NeuroprofileResponse = {
     ok: boolean;
@@ -19,6 +20,7 @@ export type NeuroprofileResponse = {
  * @param {string} token - A token used for authentication or authorization purposes.
  * @param {IKeystrokeCollection | IMobileKeystrokeCollection} typingData - The user's typing data, which can be either desktop or mobile keystroke collections.
  * @param {'Desktop' | 'Mobile'} platform - The platform type indicating whether the typing data is from a desktop or mobile device.
+ * @param {'default' | 'chatbot' | 'extension'} a2Action - Action that determines the type of response to be received from the server.
  * @returns {Promise<NeuroprofileResponse>} A promise that resolves to a NeuroprofileResponse containing the reduced neuroprofile data.
  */
 
@@ -27,12 +29,13 @@ export const getReducedNeuroprofile = async (
     token: string,
     typingData: IKeystrokeCollection | IMobileKeystrokeCollection,
     platform: 'Desktop' | 'Mobile',
+    a2Action: A2ActionTypes
 ): Promise<NeuroprofileResponse> => {
 
     const formattedBody = formatKeystrokeData(platform, typingData);
 
     const dataToSend = {
-        'a2_actions': ["a2_chatbot"],
+        'a2_actions': [a2Actions[a2Action]],
         'keystroke_data': {
             ...formattedBody,
             'user_id': userID,

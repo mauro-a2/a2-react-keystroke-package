@@ -2,11 +2,11 @@ import { useMobileKeystrokeAndroid, A2AndroidTextInput } from '@area2-ai/a2-reac
 
 export const AndroidInput = () => {
 
-    const { getNeuroprofile } = useMobileKeystrokeAndroid('user-id', 'user-token');
+    const { getNeuroprofile } = useMobileKeystrokeAndroid();
 
     const handleSubmit = async () => {
 
-        const neuroResponse = await getNeuroprofile();
+        const neuroResponse = await getNeuroprofile('user-id', 'user-token');
 
         if (!neuroResponse) return;
 
@@ -23,8 +23,6 @@ export const AndroidInput = () => {
     return (
         <div>
             <A2AndroidTextInput
-                userUID='user-id'
-                userToken='user-token'
                 style={{ width: '300px' }}
             />
             <button onClick={handleSubmit}>Send</button>
