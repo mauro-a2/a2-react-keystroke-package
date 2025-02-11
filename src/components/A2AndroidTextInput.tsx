@@ -16,7 +16,7 @@ export const A2AndroidTextInput = ({ ...rest }: Props) => {
         handleKeyup,
         handlePaste,
         handleKeyInput,
-        handleBeforeInput
+        handleOnBeforeInput
     } = useMobileKeystrokeAndroid();
 
     return (
@@ -34,7 +34,7 @@ export const A2AndroidTextInput = ({ ...rest }: Props) => {
 
                 onPaste={handlePaste}
                 onInput={({ currentTarget }) => { handleKeyInput(currentTarget.value) }}
-                onBeforeInput={({ currentTarget }) => handleBeforeInput(currentTarget.value)}
+                onBeforeInput={({ currentTarget }) => handleOnBeforeInput(currentTarget.value)}
                 {...rest}
             />
         </>

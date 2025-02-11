@@ -25,7 +25,7 @@ export const useMobileKeystrokeAndroid = () => {
      * Handles the before input event.
      * @param {string} currentValue - The current value of the input before the input event.
      */
-    const handleBeforeInput = useCallback((currentValue: string) => {
+    const handleOnBeforeInput = useCallback((currentValue: string) => {
         if (!canAccess) { return }
         getAndroidKeystrokeManager().processBeforeInput(currentValue, androidTextValue);
     }, [canAccess, androidTextValue]);
@@ -144,7 +144,7 @@ export const useMobileKeystrokeAndroid = () => {
         handleKeyup,
         handlePaste,
         handleKeyInput,
-        handleBeforeInput,
+        handleOnBeforeInput,
         getNeuroprofile: handleSubmit
     }
 

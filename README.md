@@ -204,7 +204,7 @@ Designed for collecting keystroke data on Android devices.
 | `handleKeyup` | Captures key release events. |
 | `handlePaste` | Captures pasted text. |
 | `handleKeyInput` | Handles the key input event. |
-| `handleBeforeInput` | Handles the before input event. |
+| `handleOnBeforeInput` | Handles the before input event. |
 | `getNeuroprofile` | Sends collected data to generate a neuroprofile. |
 | **Property** |  |
 | `value` | Text input value. |
@@ -218,7 +218,7 @@ const {
   handleKeyup,
   handlePaste,
   handleKeyInput,
-  handleBeforeInput,
+  handleOnBeforeInput,
   value,
 } = useMobileKeystrokeAndroid();
 
@@ -237,7 +237,7 @@ const {
   onInput={({ currentTarget }) => {
     handleKeyInput(currentTarget.value);
   }}
-  onBeforeInput={({ currentTarget }) => handleBeforeInput(currentTarget.value)}
+  onBeforeInput={({ currentTarget }) => handleOnBeforeInput(currentTarget.value)}
 />
 ```
 
