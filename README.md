@@ -34,9 +34,9 @@ yarn add @area2-ai/a2-react-keystroke-package
 Create a configuration file (`area2-config.ts`) to securely store your API key:
 
 ```tsx
-import type { ICredentialsConfig } from "@area2-ai/a2-react-keystroke-package";
+import type { IA2CredentialsConfig } from "@area2-ai/a2-react-keystroke-package";
 
-export const config: ICredentialsConfig = {
+export const config: IA2CredentialsConfig = {
     apiKey: 'your-api-key-here'
 };
 ```
@@ -129,7 +129,7 @@ Designed for collecting keystroke data on desktop browsers.
 | --- | --- | --- | --- |
 | `userUID` | String | Unique identifier for the user. | Yes |
 | `userToken` | String | Authorization token. | Yes |
-| `action` | ”default” \ ”chatbot” \ ”extension” | Optional action that determines the type of response to be received from the server. | No. Default value: “default” |
+| `action` | ”default” \ ”compare” \ ”summary” \ ”trends” | Optional action that determines the type of response to be received from the server. | No. Default value: `“default”` |
 
 **Example Usage**
 
@@ -184,7 +184,7 @@ const handleSubmit = async () => {
 };
 
 <div>
-  <A2TextInput handleSubmitOnEnter={handleSubmit} />
+  <A2TextInput />
   <button onClick={handleSubmit}>Send</button>
 </div>
 ```
@@ -374,15 +374,16 @@ interface IMobileKeystrokeCollection extends IKeystrokeCollection {
 
 Use the `getNeuroprofile` function to send collected data and retrieve a neuroprofile.
 
-To generate a neuroprofile, it is necessary to send an **area2 action**, e.g. `‘chatbot’`.
+To generate a neuroprofile, it is necessary to send an **area2 action**, e.g. `‘compare’`.
 
 ### Available actions
 
 | **Action type** `code` | **Purpose** | **Functionality** | **Neuroprofile Usage** | **Returned Output** |
 | --- | --- | --- | --- | --- |
-| default `default` | Captures session data, generates a neuroprofile, and stores it in the database. | Generates a **neuroprofile** from user interactions. **Stores the neuroprofile in the database (not exposed).** | **Stores neuroprofile for internal use**. Does not expose it in API responses. | `{ "timestamp": "...", "user_id": "...", "client_id": "..." }` *(Session metadata only)* |
-| chatbot `(a2_chatbot)` | Processes neuroprofile data to personalize chatbot responses. | **Post-processes neuroprofile** for AI chatbot adaptation. Tracks **cognitive, motor, stress, and fatigue levels** in real time. Analyzes **daily and weekly trends** to detect performance patterns. | **Personalizes AI chatbot responses** based on cognitive and behavioral trends. | `{ "current_state": { "cognitive": ..., "motor": ..., "stress_level": ... }, "recommended_interaction_time": "Afternoon" }` |
-| extension `(a2_extension)` | Summarizes key user metrics and generates a preamble for user-aware AI interactions. | Extracts **key neuroprofile metrics** relevant to AI interactions. **Generates a preamble** to adjust response complexity and tone. Tracks **self-comparison scores** for contextual adaptation. Identifies **peak hours** for user engagement. | **Creates a summary of neuroprofile metrics** for real-time AI interaction adjustments. | `{ "ai_preamble": "...", "overall_state": 0.59, "peak_day_hours": [10, 14] }` |
+| default `default` | Captures session data, generates a neuroprofile, and stores it in the database. | Generates a neuroprofile from user interactions. Stores the neuroprofile in the database (not exposed). | Stores neuroprofile for internal use. Does not expose it in API responses. | `{ "timestamp": "...", "user_id": "...", "client_id": "..." }` |
+| compare `a2_compare` | Captures session data, generates a neuroprofile, and returns a comparison of the user's current neuroprofile with their historical averages. | Tracks self-comparison scores to assess fluctuations in performance. Provides insights on whether brain function level is improving or declining. | Provides a self-benchmarking reference for performance tracking. | `{ "self_compare_scores": { "average_pos": 0.57, "current_pos": 0.58 }, "timestamp": "..." }` |
+| summary `a2_summary` | Captures session data, generates a neuroprofile, and returns the user's latest neuroprofile snapshot for quick evaluation. | Retrieves and presents the most recent cognitive, motor, fatigue, and stress levels. | Provides a real-time summary of neuroprofile state. | `{ "current_state": { "cognitive": ..., "motor": ..., "fatigue_level": ..., "stress_level": ... }, "timestamp": "..." }` |
+| trends `a2_trends` | Captures session data, generates a neuroprofile, and returns the user’s neuroprofile trends over time to detect patterns. | Monitors daily and weekly trends in cognitive, motor, and emotional performance. Tracks session volume across different periods. | Provides longitudinal insights to understand daily and weekly function trends. | `{ "daily_trends": { "Morning": { "cognitive": ..., "motor": ..., "emotional": ..., "n_sessions": ... } }, "weekly_trends": { "Monday": { "cognitive": ..., "motor": ..., "emotional": ..., "n_sessions": ... } } }` |
 
 ### **Example Usage**
 
@@ -395,7 +396,7 @@ const {
 } = useKeystroke();
 
 const handleSubmit = async () => {
-  const response = await getNeuroprofile('user-id', 'user-token', 'chatbot');
+  const response = await getNeuroprofile('user-id', 'user-token', 'compare');
   if (response?.data) console.log('Neuroprofile:', response.data);
 };
 ```
@@ -403,7 +404,13 @@ const handleSubmit = async () => {
 ### Sample Response
 
 ```json
-{"current_state": {"behavioral": 0.40,"cognitive": 0.60,"fatigue_level": 0.69,"motor": 0.64,"stress_level": 0.37},"daily_trends": {"Morning": { "cognitive": 0.59, "emotional": 0.38, "motor": 0.63, "n_sessions": 125 },...},"weekly_trends": {"Monday": { "cognitive": 0.59, "emotional": 0.38, "motor": 0.63, "n_sessions": 123 },...},"recommended_interaction_time": "Morning","timestamp": "2025-01-02 10:07"}
+{
+  "self_compare_scores": {
+    "average_pos": 0.54,
+    "current_pos": 0.6
+  },
+  "timestamp": "2025-02-03 10:26"
+}
 ```
 
 ---
