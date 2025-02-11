@@ -3,15 +3,13 @@ import { ChangeEvent, useCallback, useContext, useState } from "react";
 import { Area2Context } from "../context";
 import { getBrowserInfo, getOsInfo } from "../utils";
 import { getReducedNeuroprofile } from "../api";
-import type { IKeystrokeResult } from "../interfaces";
+import type { A2ActionTypes, IKeystrokeResult } from "../interfaces";
 
 /**
  * Keystroke for desktop browsers
- * @param {string} userUID - The unique identifier of the user for whom the neuroprofile is generated.
- * @param {string} userToken - A token used for authentication or authorization purposes.
  * @returns {Object} - An object containing the text input, input change handler, keydown handler, keyup handler, typing session status, and getNeuroprofile function.
  */
-export const useKeystroke = (userUID: string, userToken: string) => {
+export const useKeystroke = () => {
 
     const {
         canAccess,
@@ -45,9 +43,12 @@ export const useKeystroke = (userUID: string, userToken: string) => {
 
     /**
      * Handles the submission of typing data and retrieves the neuroprofile.
+     * @param {string} userUID - The unique identifier of the user for whom the neuroprofile is generated.
+     * @param {string} userToken - A token used for authentication or authorization purposes.
+     * @param {'default' | 'compare' | 'summary' | 'trends'} [action] - Optional action that determines the type of response to be received from the server.
      * @returns {Promise<IKeystrokeResult | undefined>} - A promise that resolves to the keystroke result or undefined if the submission is skipped.
      */
-    const handleSubmit = useCallback(async (): Promise<IKeystrokeResult | undefined> => {
+    const handleSubmit = useCallback(async (userUID: string, userToken: string, action?: A2ActionTypes): Promise<IKeystrokeResult | undefined> => {
         if (isSending) return;
 
         setDesktopTextValue("");
@@ -76,7 +77,13 @@ export const useKeystroke = (userUID: string, userToken: string) => {
             };
         }
 
-        const neuroProfileResp = await getReducedNeuroprofile(userUID, userToken, typingData, 'Desktop');
+        const neuroProfileResp = await getReducedNeuroprofile(
+            userUID,
+            userToken,
+            typingData,
+            'Desktop',
+            action ?? 'default'
+        );
 
         getKeystrokeManager().resetTypingData();
         setIsSending(false);
@@ -91,7 +98,7 @@ export const useKeystroke = (userUID: string, userToken: string) => {
         }
 
         return { data: neuroProfileResp.neuroprofile! };
-    }, [isSending, userToken, userUID]);
+    }, [isSending]);
 
     /**
      * Handles the keydown event.

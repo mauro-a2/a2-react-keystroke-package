@@ -1,12 +1,12 @@
-import { useMobileKeystrokeIOS, A2IosTextInput } from '@area2-ai/a2-react-keystroke-package';
+import { useMobileKeystrokeIOS, A2IosTextInput, IA2SummaryResults } from '@area2-ai/a2-react-keystroke-package';
 
 export const IosInput = () => {
 
-    const { getNeuroprofile } = useMobileKeystrokeIOS('user-id', 'user-token');
+    const { getNeuroprofile } = useMobileKeystrokeIOS();
 
     const handleSubmit = async () => {
 
-        const neuroResponse = await getNeuroprofile();
+        const neuroResponse = await getNeuroprofile('user-id', 'user-token', 'summary');
 
         if (!neuroResponse) return;
 
@@ -17,14 +17,14 @@ export const IosInput = () => {
 
         if (!neuroResponse.data) return;
 
-        alert(`Neuroprofile: ${neuroResponse.data.current_state.fatigue_level}`);
+        const { current_state } = neuroResponse.data as IA2SummaryResults;
+
+        alert(`Neuroprofile: ${current_state.fatigue_level}`);
     }
 
     return (
         <div>
             <A2IosTextInput
-                userUID='user-id'
-                userToken='user-token'
                 style={{ width: '300px' }}
             />
             <button onClick={handleSubmit}>Send</button>

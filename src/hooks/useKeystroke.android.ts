@@ -2,16 +2,14 @@ import { ClipboardEvent, ChangeEvent, useCallback, useState, useContext } from "
 
 import { Area2Context } from "../context";
 import { getBrowserInfo, getOsInfo } from "../utils";
-import type { IKeystrokeResult } from "../interfaces";
+import type { A2ActionTypes, IKeystrokeResult } from "../interfaces";
 import { getReducedNeuroprofile } from "../api";
 
 /**
  * Keystroke for android mobile browser
- * @param {string} userUID - The unique identifier of the user for whom the neuroprofile is generated.
- * @param {string} userToken - A token used for authentication or authorization purposes.
  * @returns {Object} - An object containing the text input, input change handler, keydown handler, keyup handler, paste handler, before input handler, key input handler, and getNeuroprofile function.
  */
-export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) => {
+export const useMobileKeystrokeAndroid = () => {
 
     const {
         canAccess,
@@ -27,7 +25,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
      * Handles the before input event.
      * @param {string} currentValue - The current value of the input before the input event.
      */
-    const handleBeforeInput = useCallback((currentValue: string) => {
+    const handleOnBeforeInput = useCallback((currentValue: string) => {
         if (!canAccess) { return }
         getAndroidKeystrokeManager().processBeforeInput(currentValue, androidTextValue);
     }, [canAccess, androidTextValue]);
@@ -57,9 +55,12 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
 
     /**
      * Handles the submission of typing data and retrieves the neuroprofile.
+     * @param {string} userUID - The unique identifier of the user for whom the neuroprofile is generated.
+     * @param {string} userToken - A token used for authentication or authorization purposes.
+     * @param {'default' | 'compare' | 'summary' | 'trends'} [action] - Optional action that determines the type of response to be received from the server.
      * @returns {Promise<IKeystrokeResult | undefined>} - A promise that resolves to the keystroke result or undefined if the submission is skipped.
      */
-    const handleSubmit = useCallback(async (): Promise<IKeystrokeResult | undefined> => {
+    const handleSubmit = useCallback(async (userUID: string, userToken: string, action?: A2ActionTypes): Promise<IKeystrokeResult | undefined> => {
         if (isSending) return;
 
         setAndroidTextValue("");
@@ -86,7 +87,13 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
             };
         }
 
-        const neuroProfileResp = await getReducedNeuroprofile(userUID, userToken, typingData, 'Mobile');
+        const neuroProfileResp = await getReducedNeuroprofile(
+            userUID,
+            userToken,
+            typingData,
+            'Mobile',
+            action ?? 'default'
+        );
 
         getAndroidKeystrokeManager().resetTypingData();
         setIsSending(false);
@@ -99,7 +106,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
         }
 
         return { data: neuroProfileResp.neuroprofile! };
-    }, [isSending, userToken, userUID]);
+    }, [isSending]);
 
 
     /**
@@ -137,7 +144,7 @@ export const useMobileKeystrokeAndroid = (userUID: string, userToken: string) =>
         handleKeyup,
         handlePaste,
         handleKeyInput,
-        handleBeforeInput,
+        handleOnBeforeInput,
         getNeuroprofile: handleSubmit
     }
 

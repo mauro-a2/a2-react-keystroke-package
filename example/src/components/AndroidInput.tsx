@@ -1,12 +1,12 @@
-import { useMobileKeystrokeAndroid, A2AndroidTextInput } from '@area2-ai/a2-react-keystroke-package';
+import { useMobileKeystrokeAndroid, A2AndroidTextInput, type IA2CompareResults } from '@area2-ai/a2-react-keystroke-package';
 
 export const AndroidInput = () => {
 
-    const { getNeuroprofile } = useMobileKeystrokeAndroid('user-id', 'user-token');
+    const { getNeuroprofile } = useMobileKeystrokeAndroid();
 
     const handleSubmit = async () => {
 
-        const neuroResponse = await getNeuroprofile();
+        const neuroResponse = await getNeuroprofile('user-id', 'user-token', 'compare');
 
         if (!neuroResponse) return;
 
@@ -17,14 +17,14 @@ export const AndroidInput = () => {
 
         if (!neuroResponse.data) return;
 
-        alert(`Neuroprofile: ${neuroResponse.data.current_state.behavioral}`);
+        const { self_compare_scores } = neuroResponse.data as IA2CompareResults;
+
+        alert(`Neuroprofile: ${self_compare_scores}`);
     }
 
     return (
         <div>
             <A2AndroidTextInput
-                userUID='user-id'
-                userToken='user-token'
                 style={{ width: '300px' }}
             />
             <button onClick={handleSubmit}>Send</button>
