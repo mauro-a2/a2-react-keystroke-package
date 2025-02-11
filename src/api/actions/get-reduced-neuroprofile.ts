@@ -4,11 +4,18 @@ import type { IKeystrokeCollection, IMobileKeystrokeCollection } from "@area2-ai
 import a2API from "../area2-api";
 import { a2Actions } from "../../constants";
 import { formatKeystrokeData } from "../../helpers";
-import type { A2ActionTypes, IA2APIResponse, IA2ChatbotResults } from "../../interfaces";
+import type {
+    A2ActionTypes,
+    IA2APIResponse,
+    IA2CompareResults,
+    IA2DefaultResults,
+    IA2SummaryResults,
+    IA2TrendsResults
+} from "../../interfaces";
 
 export type NeuroprofileResponse = {
     ok: boolean;
-    neuroprofile?: IA2ChatbotResults;
+    neuroprofile?: IA2DefaultResults | IA2CompareResults | IA2SummaryResults | IA2TrendsResults;
     error?: string;
     message?: string;
 }
@@ -20,8 +27,8 @@ export type NeuroprofileResponse = {
  * @param {string} token - A token used for authentication or authorization purposes.
  * @param {IKeystrokeCollection | IMobileKeystrokeCollection} typingData - The user's typing data, which can be either desktop or mobile keystroke collections.
  * @param {'Desktop' | 'Mobile'} platform - The platform type indicating whether the typing data is from a desktop or mobile device.
- * @param {'default' | 'chatbot' | 'extension'} a2Action - Action that determines the type of response to be received from the server.
- * @returns {Promise<NeuroprofileResponse>} A promise that resolves to a NeuroprofileResponse containing the reduced neuroprofile data.
+ * @param {'default' | 'compare' | 'summary' | 'trends'} a2Action - Action that determines the type of response to be received from the server.
+ * @returns {Promise<NeuroprofileResponse>} A promise that resolves to a NeuroprofileResponse containing the neuroprofile data.
  */
 
 export const getReducedNeuroprofile = async (
@@ -60,9 +67,30 @@ export const getReducedNeuroprofile = async (
 
         const { results } = data;
 
+        if (results?.default) {
+            return {
+                ok: true,
+                neuroprofile: results!.default,
+            }
+        }
+
+        if (results?.a2_compare) {
+            return {
+                ok: true,
+                neuroprofile: results!.a2_compare,
+            }
+        }
+
+        if (results?.a2_summary) {
+            return {
+                ok: true,
+                neuroprofile: results!.a2_summary,
+            }
+        }
+
         return {
             ok: true,
-            neuroprofile: results!.a2_chatbot,
+            neuroprofile: results!.a2_trends,
         }
     } catch (error) {
         const err = error as AxiosError<NeuroprofileResponse>;

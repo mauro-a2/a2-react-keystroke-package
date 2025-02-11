@@ -1,5 +1,6 @@
 export const a2Actions: { [key: string]: string } = {
     default: 'default',
-    extension: 'a2_extension',
-    chatbot: 'a2_chatbot'
+    compare: 'a2_compare',
+    summary: 'a2_summary',
+    trends: 'a2_trends',
 }

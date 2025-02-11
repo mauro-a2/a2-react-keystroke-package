@@ -1,2 +1,2 @@
 
-export type A2ActionTypes = 'default' | 'chatbot' | 'extension';
+export type A2ActionTypes = 'default' | 'compare' | 'summary' | 'trends';
