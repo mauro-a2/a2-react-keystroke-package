@@ -1,4 +1,4 @@
-# a2-react-keystroke-package
+# A2 Keystroke Data Collection Package for React
 
 This package enables secure and efficient collection of user keystroke data through hooks, designed for both desktop and mobile platforms. The collected data is processed by **area2** servers to generate a neuroprofile, which reflects key cognitive, behavioral, and motor performance indicators. The package includes built-in validation and privacy controls for API keys to ensure secure access.
 
@@ -22,6 +22,7 @@ Before integrating this package, ensure you have a valid API key from the A2 Dev
 ```bash
 npm i @area2-ai/a2-react-keystroke-package
 ```
+
 or
 
 ```bash
@@ -88,9 +89,7 @@ curl -H "Authorization: Bearer your-client-key" -H "Origin: https://example.com"
 ### **Success Response**
 
 ```json
-{
-  "success": true
-}
+{ "success": true }
 ```
 
 ### **Error Responses**
@@ -112,13 +111,6 @@ This section explains the available hooks and components for data collection and
 
 Designed for collecting keystroke data on desktop browsers.
 
-### **Parameters**
-
-| **Name** | **Type** | **Description** | **Required** |
-| --- | --- | --- | --- |
-| `userUID` | String | Unique identifier for the user. | Yes |
-| `userToken` | String | Authorization token. | Yes |
-
 ### **Methods and properties**
 
 | **Method** | **Description** |
@@ -131,6 +123,14 @@ Designed for collecting keystroke data on desktop browsers.
 | **Property** |  |
 | `value` | Text input value. |
 
+### Get Neuroprofile params
+
+| **Name** | **Type** | **Description** | **Required** |
+| --- | --- | --- | --- |
+| `userUID` | String | Unique identifier for the user. | Yes |
+| `userToken` | String | Authorization token. | Yes |
+| `action` | ”default” \ ”chatbot” \ ”extension” | Optional action that determines the type of response to be received from the server. | No. Default value: “default” |
+
 **Example Usage**
 
 ```tsx
@@ -141,20 +141,20 @@ const {
   getNeuroprofile,
   value,
   getIsTypingSessionActive,
-} = useKeystroke("user-id", "user-token");
+} = useKeystroke();
 
 <input
   type="text"
   placeholder="Start typing"
   onKeyDownCapture={({ key }) => handleKeydown(key)}
   onKeyUpCapture={({ key }) => handleKeyup(key)}
-  
+
   value={value}
   onChange={handleInputChange}
 />;
 
 const handleSubmit = async () => {
-  const response = await getNeuroprofile();
+  const response = await getNeuroprofile("user-id", "user-token");
   console.log(response.data);
 };
 ```
@@ -167,8 +167,6 @@ Component that renders an input field with keystroke tracking and optional submi
 
 | **Name** | **Type** | **Description** | **Required** |
 | --- | --- | --- | --- |
-| `userUID` | String | Unique identifier for the user. | Yes |
-| `userToken` | String | Authorization token. | Yes |
 | `handleSubmitOnEnter` | Function | Optional function to handle submit on Enter key press. | No |
 
 **Example Usage**
@@ -179,14 +177,14 @@ import {
   useKeystroke,
 } from "@area2-ai/a2-react-keystroke-package";
 
-const { getNeuroprofile } = useKeystroke("user-id", "user-token");
+const { getNeuroprofile } = useKeystroke();
 
 const handleSubmit = async () => {
-  const neuroResponse = await getNeuroprofile();
+  const neuroResponse = await getNeuroprofile("user-id", "user-token");
 };
 
 <div>
-  <A2TextInput userUID="user-id" userToken="user-token" />
+  <A2TextInput handleSubmitOnEnter={handleSubmit} />
   <button onClick={handleSubmit}>Send</button>
 </div>
 ```
@@ -222,19 +220,19 @@ const {
   handleKeyInput,
   handleBeforeInput,
   value,
-} = useMobileKeystrokeAndroid("user-id", "user-token");
+} = useMobileKeystrokeAndroid();
 
 <input
   type="text"
   placeholder="Type on Android"
   autoCapitalize="sentences"
-  
+
   onKeyDown={({ currentTarget }) => handleKeydown(currentTarget)}
   onKeyUp={handleKeyup}
-  
+
   value={value}
   onChange={handleInputChange}
-  
+
   onPaste={handlePaste}
   onInput={({ currentTarget }) => {
     handleKeyInput(currentTarget.value);
@@ -247,20 +245,13 @@ const {
 
 Component that renders an input field for Android mobile devices with keystroke tracking.
 
-### Props
-
-| **Name** | **Type** | **Description** | **Required** |
-| --- | --- | --- | --- |
-| `userUID` | String | Unique identifier for the user. | Yes |
-| `userToken` | String | Authorization token. | Yes |
-
 **Example Usage**
 
 ```tsx
 import { A2AndroidTextInput } from "@area2-ai/a2-react-keystroke-package";
 
 <div>
-  <A2AndroidTextInput userUID="user-id" userToken="user-token" />
+  <A2AndroidTextInput />
   <button onClick={handleSubmit}>Send</button>
 </div>
 ```
@@ -294,22 +285,22 @@ const {
   handleKeyup,
   handlePaste,
   handleOnBeforeInput,
-} = useMobileKeystrokeIOS("user-id", "user-token");
+} = useMobileKeystrokeIOS();
 
 <input
   type="text"
   placeholder="Type on iOS"
-  
+
   onKeyDownCapture={({ key, currentTarget }) =>
     handleKeydown(key, currentTarget)
   }
-  
+
   onKeyUpCapture={({ key }) => handleKeyup(key)}
-  
+
   value={value}
   onChange={handleInputChange}
   onPaste={handlePaste}
-  
+
   onBeforeInput={({ currentTarget }) => {
     handleOnBeforeInput(currentTarget.value.length);
   }}
@@ -320,20 +311,13 @@ const {
 
 Component that renders an input field for iOS mobile devices with keystroke tracking
 
-### Props
-
-| **Name** | **Type** | **Description** | **Required** |
-| --- | --- | --- | --- |
-| `userUID` | String | Unique identifier for the user. | Yes |
-| `userToken` | String | Authorization token. | Yes |
-
 **Example Usage**
 
 ```tsx
 import { A2IosTextInput } from "@area2-ai/a2-react-keystroke-package";
 
 <div>
-  <A2IosTextInput userUID="user-id" userToken="user-token" />
+  <A2IosTextInput />
   <button onClick={handleSubmit}>Send</button>
 </div>
 ```
@@ -390,29 +374,15 @@ interface IMobileKeystrokeCollection extends IKeystrokeCollection {
 
 Use the `getNeuroprofile` function to send collected data and retrieve a neuroprofile.
 
-### Sample Response
+To generate a neuroprofile, it is necessary to send an **area2 action**, e.g. `‘chatbot’`.
 
-```json
-{
-"current_state": {
-"behavioral": 0.40,
-"cognitive": 0.60,
-"fatigue_level": 0.69,
-"motor": 0.64,
-"stress_level": 0.37
-},
-"daily_trends": {
-"Morning": { "cognitive": 0.59, "emotional": 0.38, "motor": 0.63, "n_sessions": 125 },
-...
-},
-"weekly_trends": {
-"Monday": { "cognitive": 0.59, "emotional": 0.38, "motor": 0.63, "n_sessions": 123 },
-...
-},
-"recommended_interaction_time": "Morning",
-"timestamp": "2025-01-02 10:07"
-}
-```
+### Available actions
+
+| **Action type** `code` | **Purpose** | **Functionality** | **Neuroprofile Usage** | **Returned Output** |
+| --- | --- | --- | --- | --- |
+| default `default` | Captures session data, generates a neuroprofile, and stores it in the database. | Generates a **neuroprofile** from user interactions. **Stores the neuroprofile in the database (not exposed).** | **Stores neuroprofile for internal use**. Does not expose it in API responses. | `{ "timestamp": "...", "user_id": "...", "client_id": "..." }` *(Session metadata only)* |
+| chatbot `(a2_chatbot)` | Processes neuroprofile data to personalize chatbot responses. | **Post-processes neuroprofile** for AI chatbot adaptation. Tracks **cognitive, motor, stress, and fatigue levels** in real time. Analyzes **daily and weekly trends** to detect performance patterns. | **Personalizes AI chatbot responses** based on cognitive and behavioral trends. | `{ "current_state": { "cognitive": ..., "motor": ..., "stress_level": ... }, "recommended_interaction_time": "Afternoon" }` |
+| extension `(a2_extension)` | Summarizes key user metrics and generates a preamble for user-aware AI interactions. | Extracts **key neuroprofile metrics** relevant to AI interactions. **Generates a preamble** to adjust response complexity and tone. Tracks **self-comparison scores** for contextual adaptation. Identifies **peak hours** for user engagement. | **Creates a summary of neuroprofile metrics** for real-time AI interaction adjustments. | `{ "ai_preamble": "...", "overall_state": 0.59, "peak_day_hours": [10, 14] }` |
 
 ### **Example Usage**
 
@@ -422,12 +392,18 @@ const {
   handleKeydown,
   handleKeyup,
   getNeuroprofile,
-} = useKeystroke('user-id', 'user-token');
+} = useKeystroke();
 
 const handleSubmit = async () => {
-  const response = await getNeuroprofile();
+  const response = await getNeuroprofile('user-id', 'user-token', 'chatbot');
   if (response?.data) console.log('Neuroprofile:', response.data);
 };
+```
+
+### Sample Response
+
+```json
+{"current_state": {"behavioral": 0.40,"cognitive": 0.60,"fatigue_level": 0.69,"motor": 0.64,"stress_level": 0.37},"daily_trends": {"Morning": { "cognitive": 0.59, "emotional": 0.38, "motor": 0.63, "n_sessions": 125 },...},"weekly_trends": {"Monday": { "cognitive": 0.59, "emotional": 0.38, "motor": 0.63, "n_sessions": 123 },...},"recommended_interaction_time": "Morning","timestamp": "2025-01-02 10:07"}
 ```
 
 ---
@@ -481,6 +457,7 @@ curl -H "Authorization: Bearer invalid-key" -H "Origin: https://example.com" htt
 - **Access Restrictions**: Use `allowedOrigins` to control API usage by domain.
 
 ---
+
 ## Run example
 
 Open a terminal and execute the following:
@@ -497,6 +474,6 @@ yarn dev
 
 ## Run Project Locally (For Devs)
 
-1. Rename file ```.env.template``` to ```.env```
+1. Rename file `.env.template` to `.env`
 2. Provide dev keys specified in file
-3. Run in dev mode 
+3. Run in dev mode
