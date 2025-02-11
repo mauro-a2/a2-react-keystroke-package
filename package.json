@@ -1,6 +1,6 @@
 {
   "name": "@area2-ai/a2-react-keystroke-package",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "author": "Mauro Ruiz",
   "module": "dist/a2-react-keystroke-package.esm.js",
   "keywords": [
