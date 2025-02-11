@@ -1,4 +1,4 @@
 
-export interface ICredentialsConfig {
+export interface IA2CredentialsConfig {
     apiKey: string;
 }
