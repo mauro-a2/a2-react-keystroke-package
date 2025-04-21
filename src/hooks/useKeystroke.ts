@@ -1,4 +1,5 @@
-import { ChangeEvent, useCallback, useContext, useState } from "react";
+import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react";
+import type { IKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import { Area2Context } from "../context";
 import { getBrowserInfo, getOsInfo } from "../utils";
@@ -19,6 +20,9 @@ export const useKeystroke = () => {
     } = useContext(Area2Context);
 
     const [isSending, setIsSending] = useState(false);
+    const temporalTypingDataRef = useRef<IKeystrokeCollection | null>(null);
+    const userTokenRef = useRef('');
+    const userUIDRef = useRef('');
 
     const getIsTypingSessionActive = () => getKeystrokeManager().getIsTypingSessionActive;
 
@@ -26,6 +30,51 @@ export const useKeystroke = () => {
         console.warn('You are not authorized to use the hook.');
         console.log('Make sure to provide a valid access key.');
     }
+
+    /**
+     * Handles the typing session when a submission is already in progress.
+     * This function clears the desktop text value, updates the user credentials,
+     * and processes the current typing session data by ending the session and resetting it.
+     * 
+     * @param {string} userUID - The unique identifier of the user.
+     * @param {string} userToken - A token used for authentication or authorization purposes.
+     */
+    const handleTypingSessionWhileSending = (userUID: string, userToken: string) => {
+        setDesktopTextValue("");
+        userTokenRef.current = userToken;
+        userUIDRef.current = userUID;
+
+        if (temporalTypingDataRef.current === null) {
+            temporalTypingDataRef.current = getKeystrokeManager().endTypingSession();
+            temporalTypingDataRef.current.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;
+            console.log('Temporal TData: ', temporalTypingDataRef.current);
+        }
+
+        getKeystrokeManager().resetTypingData();
+    }
+
+    /**
+     * This function sends the first typing session that was detected while waiting for a reply to the previous call to the server.
+     * Its purpose is to keep the typing metrics on the server up to date.
+     */
+    const updateTypingSession = () => {
+        if (!temporalTypingDataRef.current) { return }
+        getReducedNeuroprofile(
+            userUIDRef.current,
+            userTokenRef.current,
+            temporalTypingDataRef.current,
+            'Desktop',
+            "default"
+        );
+        temporalTypingDataRef.current = null;
+    }
+
+    useEffect(() => {
+        if (!isSending) {
+            updateTypingSession();
+        }
+    }, [isSending]);
+
 
     /**
      * Handles the input change event
@@ -49,12 +98,16 @@ export const useKeystroke = () => {
      * @returns {Promise<IKeystrokeResult | undefined>} - A promise that resolves to the keystroke result or undefined if the submission is skipped.
      */
     const handleSubmit = useCallback(async (userUID: string, userToken: string, action?: A2ActionTypes): Promise<IKeystrokeResult | undefined> => {
-        if (isSending) return;
+        if (isSending) {
+            handleTypingSessionWhileSending(userUID, userToken);
+            return;
+        }
 
         setDesktopTextValue("");
         setIsSending(true);
 
         const typingData = getKeystrokeManager().endTypingSession();
+        getKeystrokeManager().resetTypingData();
 
         if (!typingData.startUnixTime) {
             console.log(`Empty typing data for session: ${typingData.sessionID}. Skipping...`);
@@ -85,7 +138,6 @@ export const useKeystroke = () => {
             action ?? 'default'
         );
 
-        getKeystrokeManager().resetTypingData();
         setIsSending(false);
 
         if (!neuroProfileResp.ok) {
