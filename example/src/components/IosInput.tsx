@@ -6,7 +6,7 @@ export const IosInput = () => {
 
     const handleSubmit = async () => {
 
-        const neuroResponse = await getNeuroprofile('user-id', 'user-token', 'summary');
+        const neuroResponse = await getNeuroprofile('user-id', 'user-token', ['summary']);
 
         if (!neuroResponse) return;
 

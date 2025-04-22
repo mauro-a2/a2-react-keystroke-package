@@ -2,20 +2,14 @@ import type { AxiosError } from "axios";
 import type { IKeystrokeCollection, IMobileKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import a2API from "../area2-api";
-import { a2Actions } from "../../constants";
 import { formatKeystrokeData } from "../../helpers";
 import type {
-    A2ActionTypes,
     IA2APIResponse,
-    IA2CompareResults,
-    IA2DefaultResults,
-    IA2SummaryResults,
-    IA2TrendsResults
 } from "../../interfaces";
 
 export type NeuroprofileResponse = {
     ok: boolean;
-    neuroprofile?: IA2DefaultResults | IA2CompareResults | IA2SummaryResults | IA2TrendsResults;
+    neuroprofile?: unknown;
     error?: string;
     message?: string;
 }
@@ -27,7 +21,7 @@ export type NeuroprofileResponse = {
  * @param {string} token - A token used for authentication or authorization purposes.
  * @param {IKeystrokeCollection | IMobileKeystrokeCollection} typingData - The user's typing data, which can be either desktop or mobile keystroke collections.
  * @param {'Desktop' | 'Mobile'} platform - The platform type indicating whether the typing data is from a desktop or mobile device.
- * @param {'default' | 'compare' | 'summary' | 'trends'} a2Action - Action that determines the type of response to be received from the server.
+ * @param {string[]} a2Actions - Action that determines the type of response to be received from the server.
  * @returns {Promise<NeuroprofileResponse>} A promise that resolves to a NeuroprofileResponse containing the neuroprofile data.
  */
 
@@ -36,13 +30,13 @@ export const getReducedNeuroprofile = async (
     token: string,
     typingData: IKeystrokeCollection | IMobileKeystrokeCollection,
     platform: 'Desktop' | 'Mobile',
-    a2Action: A2ActionTypes
+    a2Actions: string[],
 ): Promise<NeuroprofileResponse> => {
 
     const formattedBody = formatKeystrokeData(platform, typingData);
 
     const dataToSend = {
-        'a2_actions': [a2Actions[a2Action]],
+        'a2_actions': a2Actions,
         'keystroke_data': {
             ...formattedBody,
             'user_id': userID,
@@ -67,30 +61,9 @@ export const getReducedNeuroprofile = async (
 
         const { results } = data;
 
-        if (results?.default) {
-            return {
-                ok: true,
-                neuroprofile: results!.default,
-            }
-        }
-
-        if (results?.a2_compare) {
-            return {
-                ok: true,
-                neuroprofile: results!.a2_compare,
-            }
-        }
-
-        if (results?.a2_summary) {
-            return {
-                ok: true,
-                neuroprofile: results!.a2_summary,
-            }
-        }
-
         return {
             ok: true,
-            neuroprofile: results!.a2_trends,
+            neuroprofile: results!,
         }
     } catch (error) {
         const err = error as AxiosError<NeuroprofileResponse>;
