@@ -47,7 +47,6 @@ export const useKeystroke = () => {
         if (temporalTypingDataRef.current === null) {
             temporalTypingDataRef.current = getKeystrokeManager().endTypingSession();
             temporalTypingDataRef.current.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;
-            console.log('Temporal TData: ', temporalTypingDataRef.current);
         }
 
         getKeystrokeManager().resetTypingData();
