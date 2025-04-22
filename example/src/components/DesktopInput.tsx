@@ -1,9 +1,14 @@
 import { A2TextInput, useKeystroke } from '@area2-ai/a2-react-keystroke-package';
 
 export const DesktopInput = () => {
-    const { getNeuroprofile } = useKeystroke();
+    const { getNeuroprofile, value } = useKeystroke();
 
     const handleSubmit = async () => {
+
+        if (value === "") {
+            console.log('No text to send');
+            return;
+        }
 
         const neuroResponse = await getNeuroprofile('user-id', 'user-token', "compare");
 
