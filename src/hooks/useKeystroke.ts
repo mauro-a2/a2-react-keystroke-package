@@ -4,7 +4,7 @@ import type { IKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 import { Area2Context } from "../context";
 import { getBrowserInfo, getOsInfo } from "../utils";
 import { getReducedNeuroprofile } from "../api";
-import type { A2ActionTypes, IKeystrokeResult } from "../interfaces";
+import type { IKeystrokeResult } from "../interfaces";
 
 /**
  * Keystroke for desktop browsers
@@ -63,7 +63,7 @@ export const useKeystroke = () => {
             userTokenRef.current,
             temporalTypingDataRef.current,
             'Desktop',
-            "default"
+            ["default"]
         );
         temporalTypingDataRef.current = null;
     }
@@ -93,10 +93,10 @@ export const useKeystroke = () => {
      * Handles the submission of typing data and retrieves the neuroprofile.
      * @param {string} userUID - The unique identifier of the user for whom the neuroprofile is generated.
      * @param {string} userToken - A token used for authentication or authorization purposes.
-     * @param {'default' | 'compare' | 'summary' | 'trends'} [action] - Optional action that determines the type of response to be received from the server.
+     * @param {string[]} [actions] - Action that determines the type of response to be received from the server.
      * @returns {Promise<IKeystrokeResult | undefined>} - A promise that resolves to the keystroke result or undefined if the submission is skipped.
      */
-    const handleSubmit = useCallback(async (userUID: string, userToken: string, action?: A2ActionTypes): Promise<IKeystrokeResult | undefined> => {
+    const handleSubmit = useCallback(async (userUID: string, userToken: string, actions: string[]): Promise<IKeystrokeResult | undefined> => {
         if (isSending) {
             handleTypingSessionWhileSending(userUID, userToken);
             return;
@@ -134,7 +134,7 @@ export const useKeystroke = () => {
             userToken,
             typingData,
             'Desktop',
-            action ?? 'default'
+            actions
         );
 
         setIsSending(false);

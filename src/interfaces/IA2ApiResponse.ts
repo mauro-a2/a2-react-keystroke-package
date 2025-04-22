@@ -1,7 +1,7 @@
 
 export interface IA2APIResponse {
     status:     'success' | 'error';
-    results?:   IA2ApiResults;
+    results?:   unknown;
     message?:   string;
     error?:     string;
 }

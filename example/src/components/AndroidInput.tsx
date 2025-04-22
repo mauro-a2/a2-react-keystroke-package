@@ -6,7 +6,7 @@ export const AndroidInput = () => {
 
     const handleSubmit = async () => {
 
-        const neuroResponse = await getNeuroprofile('user-id', 'user-token', 'compare');
+        const neuroResponse = await getNeuroprofile('user-id', 'user-token', ['compare']);
 
         if (!neuroResponse) return;
 
