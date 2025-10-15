@@ -1,4 +1,4 @@
-import { ClipboardEvent, ChangeEvent, useCallback, useEffect, useContext, useRef } from "react";
+import { ClipboardEvent, ChangeEvent, useCallback, useContext, useRef } from "react";
 import type { IMobileKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import { Area2Context } from "../context";
@@ -9,15 +9,18 @@ import type { IErrorMessage, IiOSKeystrokeHookTemplate } from "../interfaces";
  * Keystroke for ios mobile browser
  * @param {string} inputValue - The current value of the text input - Needed to detect auto-correct changes.
  */
-export const useMobileKeystrokeIOS = (inputValue: string): IiOSKeystrokeHookTemplate<IMobileKeystrokeCollection> => {
+export const useMobileKeystrokeIOS = (): IiOSKeystrokeHookTemplate<IMobileKeystrokeCollection> => {
 
     const { getIosKeystrokeManager } = useContext(Area2Context);
 
     const typingSessionRef = useRef<IMobileKeystrokeCollection | null>(null);
 
-    useEffect(() => {
-        processAutoCorrection(inputValue);
-    }, [inputValue]);
+    //! Undefined behavior - Try to load via context - provider
+    /**
+     * Processes auto-correction based on the current input value.
+     * @param {string} inputValue - The current value of the text input.
+     */
+    // const processAutoCorrection = getIosKeystrokeManager().processAutocorrection;
 
     /**
      * Handles the before input event.
@@ -35,12 +38,6 @@ export const useMobileKeystrokeIOS = (inputValue: string): IiOSKeystrokeHookTemp
         const pastedText = event.clipboardData.getData("text");
         getIosKeystrokeManager().processPaste(pastedText);
     }, []);
-
-
-    const processAutoCorrection = (inputValue: string) => {
-        if (!getIosKeystrokeManager()) { return }
-        getIosKeystrokeManager().processAutocorrection(inputValue);
-    }
 
 
     /**
@@ -107,6 +104,7 @@ export const useMobileKeystrokeIOS = (inputValue: string): IiOSKeystrokeHookTemp
 
     return {
         A2CapturePayload: typingSessionRef.current,
+        // processAutoCorrection,
         handleProcessInputChange,
         handleProcessKeydown,
         handleProcessPaste,

@@ -20,7 +20,7 @@ export interface IMobileKeystrokeHookTemplate<T> extends IKeystrokeHookTemplate<
 
 //? Interface for desktop keystroke hook
 export interface IDesktopKeystrokeHookTemplate<T> extends IKeystrokeHookTemplate<T> {
-    isTypingSessionActive: boolean;
+    //! isTypingSessionActive: boolean;
     handleProcessInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
     handleProcessKeydown: (key: string) => void;
     handleProcessKeyup: (key: string) => void;
@@ -40,4 +40,5 @@ export interface IiOSKeystrokeHookTemplate<T> extends IMobileKeystrokeHookTempla
     handleProcessKeydown: (keyPressed: string, target: HTMLInputElement) => void;
     handleProcessKeyup: (keyPressed: string) => void;
     handleProcessOnBeforeInput: (value: number) => void;
+    //! processAutoCorrection: (textInputValue: string) => void;
 }

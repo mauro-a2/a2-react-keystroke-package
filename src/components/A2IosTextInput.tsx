@@ -16,8 +16,8 @@ export const A2IosTextInput = ({ ref, value, onChange, ...rest }: Props) => {
         handleProcessKeydown,
         handleProcessKeyup,
         handleProcessPaste,
-        handleProcessOnBeforeInput
-    } = useMobileKeystrokeIOS(value?.toString() || '');
+        handleProcessOnBeforeInput,
+    } = useMobileKeystrokeIOS();
 
     return (
         <>

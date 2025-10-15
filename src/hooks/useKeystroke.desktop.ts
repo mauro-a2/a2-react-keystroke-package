@@ -14,7 +14,8 @@ export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<IKeystrokeC
 
     const { getKeystrokeManager } = useContext(Area2Context);
 
-    const isTypingSessionActive = getKeystrokeManager().getIsTypingSessionActive;
+    //! Undefined behavior - Try to load via context - provider
+    // const isTypingSessionActive = getKeystrokeManager().getIsTypingSessionActive;
 
     /**
      * Handles the input change event
@@ -68,7 +69,7 @@ export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<IKeystrokeC
         handleProcessInputChange,
         handleProcessKeydown,
         handleProcessKeyup,
-        isTypingSessionActive,
+        // isTypingSessionActive,
         handleEndTypingSession
     };
 };

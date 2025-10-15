@@ -324,6 +324,107 @@ import { A2IosTextInput } from "@area2-ai/a2-react-keystroke-package";
 
 ---
 
+## **Platform Builder Hook: `useCipherCapture`**
+
+The `useCipherCapture` hook (alias for `useKeystrokeBuilder`) provides a unified interface to create platform-specific keystroke hooks. It automatically returns the appropriate hook based on the target platform.
+
+### **Method Signature**
+
+```tsx
+// For desktop and Android (inputValue not required)
+useCipherCapture(target: 'desktop' | 'android'): DesktopOrAndroidHook
+
+// For iOS (inputValue is required)
+useCipherCapture(target: 'ios', inputValue: string): iOSHook
+```
+
+### **Parameters**
+
+| **Name** | **Type** | **Description** | **Required** |
+| --- | --- | --- | --- |
+| `target` | `'desktop' \| 'android' \| 'ios'` | The target platform for keystroke collection. | Yes |
+| `inputValue` | `string` | **Required for iOS only.** The current value of the text input, needed to detect auto-correct changes. | iOS: Yes, Others: No |
+
+### **Return Value**
+
+Returns the appropriate hook based on the target platform:
+- **Desktop**: `useDesktopKeystroke()` result
+- **Android**: `useMobileKeystrokeAndroid()` result  
+- **iOS**: `useMobileKeystrokeIOS(inputValue)` result
+
+### **Example Usage**
+
+#### **Desktop**
+```tsx
+import { useCipherCapture } from "@area2-ai/a2-react-keystroke-package";
+
+const DesktopComponent = () => {
+  const { handleInputChange, handleKeydown, handleKeyup, getNeuroprofile } = 
+    useCipherCapture('desktop');
+
+  // Desktop implementation
+};
+```
+
+#### **Android** 
+```tsx
+import { useCipherCapture } from "@area2-ai/a2-react-keystroke-package";
+
+const AndroidComponent = () => {
+  const { handleProcessKeydown, handleProcessKeyup, handleProcessPaste } = 
+    useCipherCapture('android');
+
+  // Android implementation  
+};
+```
+
+#### **iOS** 
+```tsx
+import { useState } from 'react';
+import { useCipherCapture } from "@area2-ai/a2-react-keystroke-package";
+
+const iOSComponent = () => {
+  const [inputValue, setInputValue] = useState('');
+
+  // inputValue is REQUIRED for iOS to detect auto-correct changes
+  const { handleProcessInputChange, handleProcessKeydown, handleEndTypingSession } = 
+    useCipherCapture('ios', inputValue);
+
+  return (
+    <input
+      value={inputValue}
+      onChange={(e) => {
+        setInputValue(e.target.value);
+        handleProcessInputChange(e, inputValue);
+      }}
+      onKeyDown={({key, currentTarget}) => handleProcessKeydown(key, currentTarget)}
+    />
+  );
+};
+```
+
+### **TypeScript Benefits**
+
+The hook uses function overloading to provide type safety:
+
+- **Compile-time enforcement**: TypeScript will require `inputValue` when using `'ios'`
+- **Runtime validation**: A warning is logged if iOS is used without `inputValue`
+- **IntelliSense support**: Your IDE will show different signatures based on the platform
+
+```tsx
+// ✅ Correct - TypeScript enforces inputValue for iOS
+const iosHook = useCipherCapture('ios', currentValue);
+
+// ❌ TypeScript error - inputValue missing for iOS
+const iosHook = useCipherCapture('ios');
+
+// ✅ Correct - inputValue not needed for desktop/Android
+const desktopHook = useCipherCapture('desktop');
+const androidHook = useCipherCapture('android');
+```
+
+---
+
 ## **Data Collection Structures**
 
 ### **Desktop Data**
