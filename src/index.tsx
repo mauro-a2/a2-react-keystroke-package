@@ -1,4 +1,6 @@
 
-export { A2TextInput, A2AndroidTextInput, A2IosTextInput } from './components';
+export { A2Textbox } from './components';
 export { Area2Provider } from './context';
-export { useDesktopKeystroke as useKeystroke, useMobileKeystrokeAndroid, useMobileKeystrokeIOS } from './hooks';
+export { useKeystrokeBuilder as useCipherCapture } from './hooks';
+
+export type { TargetPlatform, IErrorMessage } from './interfaces';
