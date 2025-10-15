@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer, useRef } from 'react';
+import React, { useEffect, useReducer, useRef } from 'react';
 import {
     KeystrokeManager,
     AndroidKeystrokeManager,
@@ -7,25 +7,17 @@ import {
 
 import { Area2Context, area2Reducer } from '.';
 
-export interface Area2State {
-    desktopTextValue: string;
-    iOSTextValue: string;
-    androidTextValue: string;
-}
+export interface Area2State { }
 
 interface Props {
     children: React.ReactNode;
 }
 
-const AREA2_INITIAL_STATE: Area2State = {
-    desktopTextValue: '',
-    androidTextValue: '',
-    iOSTextValue: ''
-}
+const AREA2_INITIAL_STATE: Area2State = {}
 
 export const Area2Provider = ({ children }: Props) => {
 
-    const [state, dispatch] = useReducer(area2Reducer, AREA2_INITIAL_STATE);
+    const [state] = useReducer(area2Reducer, AREA2_INITIAL_STATE); //[state, dispatch]
 
     const keystrokeManagerRef = useRef<KeystrokeManager>();
     const androidKeystrokeManagerRef = useRef<AndroidKeystrokeManager>();
@@ -34,18 +26,6 @@ export const Area2Provider = ({ children }: Props) => {
     const getKeystrokeManager = () => keystrokeManagerRef.current!;
     const getAndroidKeystrokeManager = () => androidKeystrokeManagerRef.current!;
     const getIosKeystrokeManager = () => iosKeystrokeManagerRef.current!;
-
-    const setDesktopTextValue = useCallback((value: string) => {
-        dispatch({ type: '[A2 Desktop] - Update text', payload: { newValue: value } })
-    }, []);
-
-    const setIOSTextValue = useCallback((value: string) => {
-        dispatch({ type: '[A2 iOS] - Update text', payload: { newValue: value } })
-    }, []);
-
-    const setAndroidTextValue = useCallback((value: string) => {
-        dispatch({ type: '[A2 Android] - Update text', payload: { newValue: value } })
-    }, []);
 
     useEffect(() => {
         keystrokeManagerRef.current = new KeystrokeManager();
@@ -56,14 +36,9 @@ export const Area2Provider = ({ children }: Props) => {
     return (
         <Area2Context.Provider value={{
             ...state,
-
-            //Methods
             getKeystrokeManager,
             getAndroidKeystrokeManager,
-            getIosKeystrokeManager,
-            setDesktopTextValue,
-            setIOSTextValue,
-            setAndroidTextValue
+            getIosKeystrokeManager
         }}>
             {children}
         </Area2Context.Provider>
