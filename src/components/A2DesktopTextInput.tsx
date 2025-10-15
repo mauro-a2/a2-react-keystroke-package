@@ -19,7 +19,7 @@ export const A2DesktopTextInput = ({ ref, endSessionOnEnter = false, onChange, .
         handleProcessKeydown,
         handleProcessKeyup,
         isTypingSessionActive,
-        handleFinishTypingSession,
+        handleEndTypingSession,
     } = useDesktopKeystroke();
 
 
@@ -37,7 +37,7 @@ export const A2DesktopTextInput = ({ ref, endSessionOnEnter = false, onChange, .
                     //? Handle ENTER key
                     if (key !== 'Enter') { return }
                     if (!isTypingSessionActive) { return }
-                    if (endSessionOnEnter) { handleFinishTypingSession() }
+                    if (endSessionOnEnter) { handleEndTypingSession() }
                 }}
 
                 onChange={(event) => {

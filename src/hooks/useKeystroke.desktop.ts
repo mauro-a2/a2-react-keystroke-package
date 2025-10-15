@@ -42,10 +42,10 @@ export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<IKeystrokeC
     }, []);
 
     /**
-     * Handles the finish typing session event.
+     * Ends the typing session and generates/returns the typing data.
      * @returns {IKeystrokeCollection | IErrorMessage} - The typing session data or an error message
      */
-    const handleFinishTypingSession = useCallback((): IKeystrokeCollection | IErrorMessage => {
+    const handleEndTypingSession = useCallback((): IKeystrokeCollection | IErrorMessage => {
 
         const typingData = getKeystrokeManager().endTypingSession();
         getKeystrokeManager().resetTypingData();
@@ -69,6 +69,6 @@ export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<IKeystrokeC
         handleProcessKeydown,
         handleProcessKeyup,
         isTypingSessionActive,
-        handleFinishTypingSession
+        handleEndTypingSession
     };
 };

@@ -1,57 +1,70 @@
-import { ClipboardEvent, ChangeEvent, useCallback, useContext } from "react";
+import { ClipboardEvent, useCallback, useContext, useRef } from "react";
 import type { IMobileKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import { Area2Context } from "../context";
 import { getBrowserInfo, getOsInfo } from "../utils";
+import type { IAndroidKeystrokeHookTemplate, IErrorMessage } from "../interfaces";
 
 /**
- * Keystroke for android mobile browser
- * @returns {Object} - An object containing the text input, input change handler, keydown handler, keyup handler, paste handler, before input handler, key input handler, and finish typing session function.
+ * Keystroke hook for android mobile browser
  */
-export const useMobileKeystrokeAndroid = () => {
+export const useMobileKeystrokeAndroid = (): IAndroidKeystrokeHookTemplate<IMobileKeystrokeCollection> => {
 
-    const {
-        getAndroidKeystrokeManager,
-        androidTextValue,
-        setAndroidTextValue
-    } = useContext(Area2Context);
+    const typingSessionRef = useRef<IMobileKeystrokeCollection | null>(null);
+
+    const { getAndroidKeystrokeManager } = useContext(Area2Context);
 
     /**
      * Handles the before input event.
-     * @param {string} currentValue - The current value of the input before the input event.
+     * @param {string} newValue - The new value of the input before the input event.
+     * @param {string} inputValue - The current value of the input.
      */
-    const handleOnBeforeInput = useCallback((currentValue: string) => {
-        getAndroidKeystrokeManager().processBeforeInput(currentValue, androidTextValue);
-    }, [androidTextValue]);
+    const handleProcessOnBeforeInput = useCallback((newValue: string, inputValue: string) => {
+        getAndroidKeystrokeManager().processBeforeInput(newValue, inputValue);
+    }, []);
 
 
     /**
      * Handles the paste event.
      * @param {ClipboardEvent<HTMLInputElement>} event - The paste event.
      */
-    const handlePaste = useCallback((event: ClipboardEvent<HTMLInputElement>) => {
+    const handleProcessPaste = useCallback((event: ClipboardEvent<HTMLInputElement>) => {
         const pastedText = event.clipboardData.getData("text");
         getAndroidKeystrokeManager().processPaste(pastedText);
     }, []);
 
 
     /**
-     * Handles the input change event
-     * @param {ChangeEvent<HTMLInputElement>} event - The input change event
+     * Handles the key input event.
+     * @param {string} inputContent - The content of the key input.
      */
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const newValue = event.target.value;
-        setAndroidTextValue(newValue);
-    }
+    const handleProcessKeyInput = useCallback((inputContent: string) => {
+        getAndroidKeystrokeManager().processKeyInput(inputContent);
+    }, []);
 
 
     /**
-     * Handles the finish typing session event.
-     * @returns {IMobileKeystrokeCollection | { error: string, message: string }} - The typing data or an error message.
+     * Handles the keydown event.
+     * @param {HTMLInputElement} target - The target input element.
      */
-    const handleFinishTypingSession = useCallback((): IMobileKeystrokeCollection | { error: string, message: string } => {
+    const handleProcessKeydown = useCallback((target: HTMLInputElement) => {
+        getAndroidKeystrokeManager().processKeydown(target);
+    }, []);
 
-        setAndroidTextValue("");
+
+    /**
+     * Handles the keyup event.
+     */
+    const handleProcessKeyup = useCallback(() => {
+        getAndroidKeystrokeManager().processKeyup();
+    }, []);
+
+
+    /**
+     * Ends the typing session and generates/returns the typing data.
+     * @returns {IMobileKeystrokeCollection | IErrorMessage} - The typing data or an error message.
+     */
+    const handleEndTypingSession = useCallback((): IMobileKeystrokeCollection | IErrorMessage => {
 
         const typingData = getAndroidKeystrokeManager().endTypingSession();
         getAndroidKeystrokeManager().resetTypingData();
@@ -65,44 +78,19 @@ export const useMobileKeystrokeAndroid = () => {
 
         typingData.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;
 
+        typingSessionRef.current = typingData;
         return typingData;
     }, []);
 
-
-    /**
-     * Handles the key input event.
-     * @param {string} inputContent - The content of the key input.
-     */
-    const handleKeyInput = useCallback((inputContent: string) => {
-        getAndroidKeystrokeManager().processKeyInput(inputContent);
-    }, []);
-
-
-    /**
-     * Handles the keydown event.
-     * @param {HTMLInputElement} target - The target input element.
-     */
-    const handleKeydown = useCallback(async (target: HTMLInputElement) => {
-        getAndroidKeystrokeManager().processKeydown(target);
-    }, []);
-
-
-    /**
-     * Handles the keyup event.
-     */
-    const handleKeyup = useCallback(() => {
-        getAndroidKeystrokeManager().processKeyup();
-    }, []);
-
     return {
-        value: androidTextValue,
-        handleInputChange,
-        handleKeydown,
-        handleKeyup,
-        handlePaste,
-        handleKeyInput,
-        handleOnBeforeInput,
-        handleFinishTypingSession
+        A2CapturePayload: typingSessionRef.current,
+        handleProcessOnBeforeInput,
+        handleProcessPaste,
+        handleProcessKeyInput,
+        handleProcessKeydown,
+        handleProcessKeyup,
+        handleEndTypingSession,
+        handleProcessInputChange: () => { }, // Not used in android hook
     }
 
 }

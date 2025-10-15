@@ -1,40 +1,38 @@
 import React from 'react';
 import { useMobileKeystrokeAndroid } from '../hooks';
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement> { }
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
+    ref?: React.Ref<HTMLInputElement>;
+}
 
 /**
- * Component that renders an input field for Android mobile devices
- * with keystroke tracking and additional event handlers.
+ * Component that renders a text input field and generates an A2CapturePayload data.
+ * @param {React.Ref<HTMLInputElement>} [ref] - Optional ref for the input element.
  */
-export const A2AndroidTextInput = ({ ...rest }: Props) => {
+export const A2AndroidTextInput = ({ ref, autoCapitalize, value, ...rest }: Props) => {
 
     const {
-        handleInputChange,
-        value,
-        handleKeydown,
-        handleKeyup,
-        handlePaste,
-        handleKeyInput,
-        handleOnBeforeInput
+        handleProcessKeydown,
+        handleProcessKeyup,
+        handleProcessPaste,
+        handleProcessKeyInput,
+        handleProcessOnBeforeInput
     } = useMobileKeystrokeAndroid();
 
     return (
         <>
             <input
+                ref={ref}
                 type="text"
-                placeholder="Using android mobile input"
-                autoCapitalize="sentences"
+                placeholder="Using android mobile implementation"
+                autoCapitalize={autoCapitalize || 'sentences'}
 
-                onKeyDown={({ currentTarget }) => handleKeydown(currentTarget)}
-                onKeyUp={handleKeyup}
+                onKeyDown={({ currentTarget }) => handleProcessKeydown(currentTarget)}
+                onKeyUp={handleProcessKeyup}
 
-                value={value}
-                onChange={handleInputChange}
-
-                onPaste={handlePaste}
-                onInput={({ currentTarget }) => { handleKeyInput(currentTarget.value) }}
-                onBeforeInput={({ currentTarget }) => handleOnBeforeInput(currentTarget.value)}
+                onPaste={handleProcessPaste}
+                onInput={({ currentTarget }) => { handleProcessKeyInput(currentTarget.value) }}
+                onBeforeInput={({ currentTarget }) => handleProcessOnBeforeInput(currentTarget.value, value?.toString() || '')}
                 {...rest}
             />
         </>
