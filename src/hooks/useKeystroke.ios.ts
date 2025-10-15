@@ -1,27 +1,29 @@
-import { ClipboardEvent, ChangeEvent, useCallback, useEffect, useContext } from "react";
+import { ClipboardEvent, ChangeEvent, useCallback, useEffect, useContext, useRef } from "react";
 import type { IMobileKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import { Area2Context } from "../context";
 import { getBrowserInfo, getOsInfo } from "../utils";
+import type { IErrorMessage, IiOSKeystrokeHookTemplate } from "../interfaces";
 
 /**
  * Keystroke for ios mobile browser
- * @returns {Object} - An object containing the text input, input change handler, keydown handler, keyup handler, paste handler, before input handler, typing session status, and finish typing session handler.
+ * @param {string} inputValue - The current value of the text input - Needed to detect auto-correct changes.
  */
-export const useMobileKeystrokeIOS = () => {
+export const useMobileKeystrokeIOS = (inputValue: string): IiOSKeystrokeHookTemplate<IMobileKeystrokeCollection> => {
 
-    const {
-        getIosKeystrokeManager,
-        iOSTextValue,
-        setIOSTextValue
-    } = useContext(Area2Context);
+    const { getIosKeystrokeManager } = useContext(Area2Context);
 
+    const typingSessionRef = useRef<IMobileKeystrokeCollection | null>(null);
+
+    useEffect(() => {
+        processAutoCorrection(inputValue);
+    }, [inputValue]);
 
     /**
      * Handles the before input event.
      * @param {number} value - The length of the content before the input event.
      */
-    const handleOnBeforeInput = useCallback((value: number) => {
+    const handleProcessOnBeforeInput = useCallback((value: number) => {
         getIosKeystrokeManager().setPrevContentLength = value;
     }, []);
 
@@ -29,45 +31,63 @@ export const useMobileKeystrokeIOS = () => {
      * Handles the paste event.
      * @param {ClipboardEvent<HTMLInputElement>} event - The paste event.
      */
-    const handlePaste = useCallback((event: ClipboardEvent<HTMLInputElement>) => {
+    const handleProcessPaste = useCallback((event: ClipboardEvent<HTMLInputElement>) => {
         const pastedText = event.clipboardData.getData("text");
         getIosKeystrokeManager().processPaste(pastedText);
     }, []);
 
-    const processAutocorrection = () => {
+
+    const processAutoCorrection = (inputValue: string) => {
         if (!getIosKeystrokeManager()) { return }
-        getIosKeystrokeManager().processAutocorrection(iOSTextValue);
+        getIosKeystrokeManager().processAutocorrection(inputValue);
     }
 
 
     /**
      * Checks for text prediction and processes it.
      * @param {string} newValue - The new value of the text input.
+     * @param {string} inputValue - The current value of the text input.
      */
-    const checkForPrediction = useCallback((newValue: string) => {
-        const textSnapshot = iOSTextValue; // Before it changes
+    const checkForPrediction = useCallback((newValue: string, inputValue: string) => {
+        const textSnapshot = inputValue; // Before it changes
         getIosKeystrokeManager().processPrediction(newValue, textSnapshot);
-    }, [iOSTextValue]);
+    }, []);
 
 
     /**
      * Handles the input change event
      * @param {ChangeEvent<HTMLInputElement>} event - The input change event
+     * @param {string} inputValue - The current value of the text input
      */
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const handleProcessInputChange = (event: ChangeEvent<HTMLInputElement>, inputValue: string) => {
         const newValue = event.target.value;
-        checkForPrediction(newValue);
-        setIOSTextValue(newValue);
+        checkForPrediction(newValue, inputValue);
     }
 
 
     /**
-     * Handles the finish typing session event.
-     * @returns {IMobileKeystrokeCollection | { error: string, message: string }} - The typing data or an error message.
+     * Handles the keydown event.
+     * @param {string} keyPressed - The key that was pressed.
+     * @param {HTMLInputElement} target - The target input element.
      */
-    const handleFinishTypingSession = useCallback((): IMobileKeystrokeCollection | { error: string, message: string } => {
+    const handleProcessKeydown = useCallback((keyPressed: string, target: HTMLInputElement) => {
+        getIosKeystrokeManager().processKeydown(keyPressed, target);
+    }, []);
 
-        setIOSTextValue("");
+
+    /**
+     * Handles the keyup event.
+     * @param {string} key - The key that was released.
+     */
+    const handleProcessKeyup = useCallback((keyPressed: string) => {
+        getIosKeystrokeManager().processKeyup(keyPressed);
+    }, []);
+
+    /**
+     * Ends the typing session and generates/returns the typing data.
+     * @returns {IMobileKeystrokeCollection | IErrorMessage} - The typing data or an error message.
+     */
+    const handleEndTypingSession = useCallback((): IMobileKeystrokeCollection | IErrorMessage => {
 
         const typingData = getIosKeystrokeManager().endTypingSession();
         getIosKeystrokeManager().resetTypingData();
@@ -81,39 +101,18 @@ export const useMobileKeystrokeIOS = () => {
 
         typingData.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;
 
+        typingSessionRef.current = typingData;
         return typingData;
     }, []);
 
-    /**
-     * Handles the keydown event.
-     * @param {string} keyPressed - The key that was pressed.
-     * @param {HTMLInputElement} target - The target input element.
-     */
-    const handleKeydown = useCallback((keyPressed: string, target: HTMLInputElement) => {
-        getIosKeystrokeManager().processKeydown(keyPressed, target);
-    }, []);
-
-
-    /**
-     * Handles the keyup event.
-     * @param {string} key - The key that was released.
-     */
-    const handleKeyup = useCallback((keyPressed: string) => {
-        getIosKeystrokeManager().processKeyup(keyPressed);
-    }, []);
-
-    useEffect(() => {
-        processAutocorrection();
-    }, [iOSTextValue]);
-
     return {
-        value: iOSTextValue,
-        handleInputChange,
-        handleKeydown,
-        handleKeyup,
-        handlePaste,
-        handleOnBeforeInput,
-        handleFinishTypingSession
+        A2CapturePayload: typingSessionRef.current,
+        handleProcessInputChange,
+        handleProcessKeydown,
+        handleProcessPaste,
+        handleProcessOnBeforeInput,
+        handleProcessKeyup,
+        handleEndTypingSession
     }
 
 }

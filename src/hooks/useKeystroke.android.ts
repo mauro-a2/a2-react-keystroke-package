@@ -90,7 +90,6 @@ export const useMobileKeystrokeAndroid = (): IAndroidKeystrokeHookTemplate<IMobi
         handleProcessKeydown,
         handleProcessKeyup,
         handleEndTypingSession,
-        handleProcessInputChange: () => { }, // Not used in android hook
     }
 
 }

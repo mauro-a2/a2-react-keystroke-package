@@ -24,7 +24,7 @@ export const A2AndroidTextInput = ({ ref, autoCapitalize, value, ...rest }: Prop
             <input
                 ref={ref}
                 type="text"
-                placeholder="Using android mobile implementation"
+                placeholder="Using android implementation"
                 autoCapitalize={autoCapitalize || 'sentences'}
 
                 onKeyDown={({ currentTarget }) => handleProcessKeydown(currentTarget)}
