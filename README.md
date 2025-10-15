@@ -481,6 +481,5 @@ yarn dev
 
 ## Run Project Locally (For Devs)
 
-1. Rename file `.env.template` to `.env`
-2. Provide dev keys specified in file
-3. Run in dev mode
+1. Install dev dependencies run: ```yarn```
+2. Run in dev mode ```yarn start```

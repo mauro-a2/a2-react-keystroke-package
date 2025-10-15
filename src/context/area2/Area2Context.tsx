@@ -6,7 +6,6 @@ import type {
 } from '@area2-ai/a2-node-keystroke-package';
 
 interface ContextProps {
-    canAccess: boolean;
     desktopTextValue: string;
     iOSTextValue: string;
     androidTextValue: string;
