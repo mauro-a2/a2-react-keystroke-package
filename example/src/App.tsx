@@ -9,10 +9,8 @@ export const App = () => {
   const handleData = () => {
     const payload = handleEndTypingSession(); //* Also can get typing data from the function.
     console.log(payload);
-    setInputValue(''); //* Clear input field after sending data (important - avoid inconsistencies)
+    setInputValue(''); //* Clear input field after sending data (important to avoid inconsistencies)
   }
-
-  //!Nota: Recordar que al establecer el target en el hook, también se debe establecer en el componente
 
   return (
     <div>
