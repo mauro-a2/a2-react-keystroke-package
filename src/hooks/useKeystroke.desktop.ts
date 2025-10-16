@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useContext, useRef } from "react";
+import { ChangeEvent, useCallback, useContext, useState } from "react";
 import type { IKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import { Area2Context } from "../context";
@@ -10,12 +10,11 @@ import type { IDesktopKeystrokeHookTemplate, IErrorMessage } from "../interfaces
  */
 export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<IKeystrokeCollection> => {
 
-    const typingSessionRef = useRef<IKeystrokeCollection | null>(null);
+    const [typingSession, setTypingSession] = useState<IKeystrokeCollection | null>(null);
 
     const { getKeystrokeManager } = useContext(Area2Context);
 
-    //! Undefined behavior - Try to load via context - provider
-    // const isTypingSessionActive = getKeystrokeManager().getIsTypingSessionActive;
+    const getIsTypingSessionActive = () => getKeystrokeManager().getIsTypingSessionActive;
 
     /**
      * Handles the input change event
@@ -60,16 +59,16 @@ export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<IKeystrokeC
 
         typingData.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;
 
-        typingSessionRef.current = typingData;
+        setTypingSession(typingData);
         return typingData;
     }, []);
 
     return {
-        A2CapturePayload: typingSessionRef.current,
+        A2CapturePayload: typingSession,
         handleProcessInputChange,
         handleProcessKeydown,
         handleProcessKeyup,
-        // isTypingSessionActive,
+        getIsTypingSessionActive,
         handleEndTypingSession
     };
 };
