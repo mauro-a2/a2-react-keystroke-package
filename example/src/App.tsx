@@ -14,11 +14,6 @@ export const App = () => {
 
   //!Nota: Recordar que al establecer el target en el hook, también se debe establecer en el componente
 
-  // TODO iOS: Necesario para detectar cambios de auto-corrección
-  // useEffect(() => {
-  //   processAutoCorrection(inputValue);
-  // }, [inputValue]);
-
   return (
     <div>
       <A2Textbox

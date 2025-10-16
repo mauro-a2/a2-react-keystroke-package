@@ -28,7 +28,8 @@ export const A2IosTextInput = ({ ref, value, onChange, ...rest }: Props) => {
 
                 onKeyDownCapture={({ key, currentTarget }) => handleProcessKeydown(key, currentTarget)}
                 onKeyUpCapture={({ key }) => handleProcessKeyup(key)}
-
+                
+                value={value} //? Necessary for updating input value
                 onChange={(event) => {
                     handleProcessInputChange(event, value?.toString() || ''); //? Execute internal change handler
                     onChange?.(event); //? Execute parent's onChange if it exists
