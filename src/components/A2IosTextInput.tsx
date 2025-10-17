@@ -1,36 +1,41 @@
 import React from 'react';
 import { useMobileKeystrokeIOS } from '../hooks';
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement> { }
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
+    ref?: React.Ref<HTMLInputElement>;
+}
 
 /**
- * Component that renders an input field for iOS mobile devices
- * with keystroke tracking and additional event handlers.
+ * Component that renders a text input field and generates an A2CapturePayload data.
+ * @param {React.Ref<HTMLInputElement>} [ref] - Optional ref for the input element.
  */
-export const A2IosTextInput = ({ ...rest }: Props) => {
+export const A2IosTextInput = ({ ref, value, onChange, ...rest }: Props) => {
 
     const {
-        handleInputChange,
-        value,
-        handleKeydown,
-        handleKeyup,
-        handlePaste,
-        handleOnBeforeInput,
+        handleProcessInputChange,
+        handleProcessKeydown,
+        handleProcessKeyup,
+        handleProcessPaste,
+        handleProcessOnBeforeInput,
     } = useMobileKeystrokeIOS();
 
     return (
         <>
             <input
+                ref={ref}
                 type="text"
-                placeholder="Using ios mobile input"
+                placeholder="Using iOS implementation"
 
-                onKeyDownCapture={({ key, currentTarget }) => handleKeydown(key, currentTarget)}
-                onKeyUpCapture={({ key }) => handleKeyup(key)}
-
-                value={value}
-                onChange={handleInputChange}
-                onPaste={handlePaste}
-                onBeforeInput={({ currentTarget }) => { handleOnBeforeInput(currentTarget.value.length) }}
+                onKeyDownCapture={({ key, currentTarget }) => handleProcessKeydown(key, currentTarget)}
+                onKeyUpCapture={({ key }) => handleProcessKeyup(key)}
+                
+                value={value} //? Necessary for updating input value
+                onChange={(event) => {
+                    handleProcessInputChange(event, value?.toString() || ''); //? Execute internal change handler
+                    onChange?.(event); //? Execute parent's onChange if it exists
+                }}
+                onPaste={handleProcessPaste}
+                onBeforeInput={({ currentTarget }) => { handleProcessOnBeforeInput(currentTarget.value.length) }}
                 {...rest}
             />
         </>
