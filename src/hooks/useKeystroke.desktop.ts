@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import type { IKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import { Area2Context } from "../context";
@@ -15,15 +15,6 @@ export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<IKeystrokeC
     const { getKeystrokeManager } = useContext(Area2Context);
 
     const getIsTypingSessionActive = () => getKeystrokeManager().getIsTypingSessionActive;
-
-    /**
-     * Handles the input change event
-     * @param {ChangeEvent<HTMLInputElement>} event - The input change event
-     */
-    const handleProcessInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const newValue = event.target.value;
-        getKeystrokeManager().processInputChange(newValue);
-    }
 
     /**
      * Handles the keydown event.
@@ -65,7 +56,6 @@ export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<IKeystrokeC
 
     return {
         A2CapturePayload: typingSession,
-        handleProcessInputChange,
         handleProcessKeydown,
         handleProcessKeyup,
         getIsTypingSessionActive,
