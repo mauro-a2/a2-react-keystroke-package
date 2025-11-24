@@ -21,7 +21,6 @@ export interface IMobileKeystrokeHookTemplate<T> extends IKeystrokeHookTemplate<
 //? Interface for desktop keystroke hook
 export interface IDesktopKeystrokeHookTemplate<T> extends IKeystrokeHookTemplate<T> {
     getIsTypingSessionActive: () => boolean;
-    handleProcessInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
     handleProcessKeydown: (key: string) => void;
     handleProcessKeyup: (key: string) => void;
 }

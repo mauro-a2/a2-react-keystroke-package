@@ -15,7 +15,6 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 export const A2DesktopTextInput = ({ ref, onChange, handleEndSessionOnEnter, ...rest }: Props) => {
 
     const {
-        handleProcessInputChange,
         handleProcessKeydown,
         handleProcessKeyup,
         getIsTypingSessionActive
@@ -40,7 +39,6 @@ export const A2DesktopTextInput = ({ ref, onChange, handleEndSessionOnEnter, ...
                 }}
 
                 onChange={(event) => {
-                    handleProcessInputChange(event); //? Execute internal change handler
                     onChange?.(event); //? Execute parent's onChange if it exists
                 }}
                 {...rest}
