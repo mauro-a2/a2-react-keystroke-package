@@ -82,7 +82,7 @@
     "typescript": "~5.6.2"
   },
   "dependencies": {
-    "@area2-ai/a2-node-keystroke-package": "^0.2.1",
+    "@area2-ai/a2-node-keystroke-package": "^1.0.0",
     "react-device-detect": "^2.2.3"
   }
 }
