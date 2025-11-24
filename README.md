@@ -114,29 +114,52 @@ Data is collected using the `useCipherCapture` hook for desktop browsers:
 
 ```tsx
 interface IKeystrokeCollection {
-    sessionID: string;                      // Unique identifier for the session
-    pressTimes: number[];                   // Key press timestamps
-    releaseTimes: number[];                 // Key release timestamps
+    appContext: string;                     // Application context identifier
+    keyAreas: number[];                     // Keyboard area identifiers for each keystroke
     keyTypes: string[];                     // Types of keys pressed
-    startUnixTime: number;                  // Start time in UNIX format
-    timeZone: number;                       // User timezone
-    weekday: 'Monday' | 'Tuesday' | ...;    // Day of the week
-    qualityCheck: string[];                 // Data validation flags
+    length: number;                         // Total number of keystrokes captured
+    pressTimes: number[];                   // Key press timestamps (in microseconds)
+    releaseTimes: number[];                 // Key release timestamps (in microseconds)
+    season: 'Winter' | 'Spring' | 'Summer' | 'Fall';  // Season of the year
+    sessionID: string;                      // Unique identifier for the session
+    startUnixTime: number | null;           // Start time in UNIX format (timestamp in seconds)
+    time: 'Morning' | 'Afternoon' | 'Evening' | 'Night';  // Time of day
+    timeZone: number;                       // User timezone offset
+    weekday: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';  // Day of the week
 }
 ```
 
 ### **Mobile Data**
 
-Mobile browsers capture additional context, including autocorrect usage and text predictions:
+Mobile browsers capture additional context, including text predictions and device information:
 
 ```tsx
 interface IMobileKeystrokeCollection extends IKeystrokeCollection {
-    autocorrectLengths: number[];
-    autocorrectTimes: number[];
-    keyboardArea: { width: number; height: number; x: number; y: number; };
-    language: string;
-    screenSizePx: { width: number; height: number; };
+    emojis: string[];                       // Emojis used during the session
+    keyboardArea?: KeyboardArea;            // Optional keyboard dimensions and position
+    language: string;                       // Keyboard language setting
+    layout: string;                         // Keyboard layout type
+    pasteLengths: number[];                 // Lengths of pasted text segments
+    pasteTimes: number[];                   // Timestamps when paste operations occurred (in microseconds)
+    performance: number[];                  // Performance metrics (in microseconds)
+    predictionLengths: number[];            // Lengths of text from predictions
+    predictionTimes: number[];              // Timestamps when predictions were used (in microseconds)
+    screenSizeMm: ScreenSize;               // Screen dimensions in millimeters
+    screenSizePx: ScreenSize;               // Screen dimensions in pixels
+    textField: TextFieldTypes;              // Type of text field being used
 }
+
+interface ScreenSize {
+    width: number;
+    height: number;
+}
+
+interface KeyboardArea extends ScreenSize {
+    x: number;                              // Horizontal position
+    y: number;                              // Vertical position
+}
+
+type TextFieldTypes = 'Text' | 'Url' | 'Email' | 'Numbers' | 'Twitter' | 'Websearch' | 'Text_ACOFF' | 'Twitter_ACOFF';
 ```
 
 ---

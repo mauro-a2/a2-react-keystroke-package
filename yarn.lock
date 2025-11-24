@@ -10,14 +10,17 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@area2-ai/a2-node-keystroke-package@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@area2-ai/a2-node-keystroke-package/-/a2-node-keystroke-package-0.2.1.tgz#bd691bb45fd1478be3147f14bf13cbb95e19fa1d"
-  integrity sha512-EZA1Erp7k82Q4hCjNKVpr2hZAnf53yhFMrvxCZOFKh0nb79Hllh2KMRZ6IkIeWMS0Ut2LRdVDjdfoFiZelTzNQ==
+<<<<<<< HEAD
+"@area2-ai/a2-node-keystroke-package@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@area2-ai/a2-node-keystroke-package/-/a2-node-keystroke-package-1.0.0.tgz#7ca62e28168c5dc9aa96f25fd6685eb918d223e2"
+  integrity sha512-1nb0KMBrGEc3BxW+EoiamLW3DhoBBGgcrACiHvxxYBfSkUpuKp/AytPqt7G/JXB26pTGxxT7vkNW/k3TfIrr4w==
   dependencies:
     emoji-regex "^10.4.0"
     uuid "^11.0.4"
 
+=======
+>>>>>>> test-local-node
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.22.13", "@babel/code-frame@^7.25.9", "@babel/code-frame@^7.26.0", "@babel/code-frame@^7.26.2", "@babel/code-frame@^7.5.5":
   version "7.26.2"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.26.2.tgz#4b5fab97d33338eff916235055f0ebc21e573a85"
@@ -3012,10 +3015,15 @@ elegant-spinner@^1.0.1:
   resolved "https://registry.yarnpkg.com/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
   integrity sha512-B+ZM+RXvRqQaAmkMlO/oSe5nMUOaUnyfGYCEHoR8wrXsZR2mA0XVibsxV1bvTwxdRWah1PkQqso2EzhILGHtEQ==
 
-emoji-regex@^10.3.0, emoji-regex@^10.4.0:
+emoji-regex@^10.3.0:
   version "10.4.0"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-10.4.0.tgz#03553afea80b3975749cfcb36f776ca268e413d4"
   integrity sha512-EC+0oUMY1Rqm4O6LLrgjtYDvcVYTy7chDnM4Q7030tP4Kwj3u/pR6gP9ygnp2CJMK5Gq+9Q2oqmrFJAz01DXjw==
+
+emoji-regex@^10.4.0:
+  version "10.6.0"
+  resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-10.6.0.tgz#bf3d6e8f7f8fd22a65d9703475bc0147357a6b0d"
+  integrity sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==
 
 emoji-regex@^7.0.1:
   version "7.0.3"
@@ -8169,11 +8177,6 @@ use@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"
   integrity sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
-
-uuid@^11.0.4:
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-11.1.0.tgz#9549028be1753bb934fc96e2bca09bb4105ae912"
-  integrity sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==
 
 uuid@^3.3.2:
   version "3.4.0"
