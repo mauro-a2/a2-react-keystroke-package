@@ -48,15 +48,13 @@ This section explains the available hooks and components for data collection. Th
 
 ### **Centralized Hook: `useCipherCapture`**
 
-Centralized hook for collecting keystroke data across all platforms (desktop, Android, iOS). It automatically detects the platform and applies the appropriate data collection logic. The hook now provides access to the `handleEndTypingSession` event, which returns a collection of data ready to be used as payload for Area2 APIs. You can also extract the resulting collection directly from the hook.
+Centralized hook for collecting keystroke data across all platforms (desktop, Android, iOS). It automatically detects the platform and applies the appropriate data collection logic. The hook now provides access to the `handleEndTypingSession` event, which returns a collection of data ready to be used as payload for Area2 APIs.
 
-### **Methods and properties**
+### **Methods**
 
 | **Method** | **Description** |
 | --- | --- |
 | `handleEndTypingSession` | Ends the typing session and generates/returns the typing data. |
-| **Property** |  |
-| `A2CapturePayload` | The typing data. |
 
 ### One Single Component: `<A2Textbox />`
 
@@ -80,12 +78,13 @@ import {
 
 export const App = () => {
   const [inputValue, setInputValue] = useState("");
+  const [capturePayload, setCapturePayload] = useState('');
 
-  const { handleEndTypingSession, A2CapturePayload } = useCipherCapture();
+  const { handleEndTypingSession } = useCipherCapture();
 
   const handleData = () => {
     const payload = handleEndTypingSession();
-    console.log(payload);
+    setCapturePayload(JSON.stringify(payload, null, 2));
     setInputValue(""); //* Clear input field after sending data (important to avoid inconsistencies)
   };
 
@@ -98,7 +97,7 @@ export const App = () => {
         handleEndSessionOnEnter={handleData}
       />
       <button onClick={handleData}>Send</button>
-      <pre>{JSON.stringify(A2CapturePayload, null, 2)}</pre>
+      <pre>{capturePayload}</pre>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { ClipboardEvent, useCallback, useContext, useRef } from "react";
+import { ClipboardEvent, useCallback, useContext } from "react";
 import type { IMobileKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import { Area2Context } from "../context";
@@ -10,7 +10,6 @@ import type { IAndroidKeystrokeHookTemplate, IErrorMessage } from "../interfaces
  */
 export const useMobileKeystrokeAndroid = (): IAndroidKeystrokeHookTemplate<IMobileKeystrokeCollection> => {
 
-    const typingSessionRef = useRef<IMobileKeystrokeCollection | null>(null);
 
     const { getAndroidKeystrokeManager } = useContext(Area2Context);
 
@@ -78,12 +77,10 @@ export const useMobileKeystrokeAndroid = (): IAndroidKeystrokeHookTemplate<IMobi
 
         typingData.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;
 
-        typingSessionRef.current = typingData;
         return typingData;
     }, []);
 
     return {
-        A2CapturePayload: typingSessionRef.current,
         handleProcessOnBeforeInput,
         handleProcessPaste,
         handleProcessKeyInput,

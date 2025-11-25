@@ -1,4 +1,4 @@
-import { ClipboardEvent, ChangeEvent, useCallback, useContext, useRef } from "react";
+import { ClipboardEvent, ChangeEvent, useCallback, useContext } from "react";
 import type { IMobileKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import { Area2Context } from "../context";
@@ -12,8 +12,6 @@ import type { IErrorMessage, IiOSKeystrokeHookTemplate } from "../interfaces";
 export const useMobileKeystrokeIOS = (): IiOSKeystrokeHookTemplate<IMobileKeystrokeCollection> => {
 
     const { getIosKeystrokeManager } = useContext(Area2Context);
-
-    const typingSessionRef = useRef<IMobileKeystrokeCollection | null>(null);
 
     //! Undefined behavior - Try to load via context - provider
     /**
@@ -98,12 +96,10 @@ export const useMobileKeystrokeIOS = (): IiOSKeystrokeHookTemplate<IMobileKeystr
 
         typingData.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;
 
-        typingSessionRef.current = typingData;
         return typingData;
     }, []);
 
     return {
-        A2CapturePayload: typingSessionRef.current,
         // processAutoCorrection,
         handleProcessInputChange,
         handleProcessKeydown,

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext } from "react";
 import type { IKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import { Area2Context } from "../context";
@@ -9,8 +9,6 @@ import type { IDesktopKeystrokeHookTemplate, IErrorMessage } from "../interfaces
  * Keystroke hook for desktop platforms.
  */
 export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<IKeystrokeCollection> => {
-
-    const [typingSession, setTypingSession] = useState<IKeystrokeCollection | null>(null);
 
     const { getKeystrokeManager } = useContext(Area2Context);
 
@@ -50,12 +48,10 @@ export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<IKeystrokeC
 
         typingData.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;
 
-        setTypingSession(typingData);
         return typingData;
     }, []);
 
     return {
-        A2CapturePayload: typingSession,
         handleProcessKeydown,
         handleProcessKeyup,
         getIsTypingSessionActive,
