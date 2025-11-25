@@ -9,7 +9,6 @@ export interface IErrorMessage {
 
 //* Common interface for keystroke hook templates
 export interface IKeystrokeHookTemplate<T> {
-    A2CapturePayload: T | null;
     handleEndTypingSession: () => T | IErrorMessage;
 }
 
