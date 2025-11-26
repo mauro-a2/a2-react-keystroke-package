@@ -1,14 +1,13 @@
 import { useCallback, useContext } from "react";
-import type { IKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import { Area2Context } from "../context";
 import { getBrowserInfo, getOsInfo } from "../utils";
-import type { IDesktopKeystrokeHookTemplate, IErrorMessage } from "../interfaces";
+import type { A2CapturePayload, IDesktopKeystrokeHookTemplate } from "../interfaces";
 
 /**
  * Keystroke hook for desktop platforms.
  */
-export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<IKeystrokeCollection> => {
+export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<A2CapturePayload> => {
 
     const { getKeystrokeManager } = useContext(Area2Context);
 
@@ -31,19 +30,17 @@ export const useDesktopKeystroke = (): IDesktopKeystrokeHookTemplate<IKeystrokeC
     }, []);
 
     /**
-     * Ends the typing session and generates/returns the typing data.
-     * @returns {IKeystrokeCollection | IErrorMessage} - The typing session data or an error message
+     * Ends the typing session and returns the typing data.
+     * @returns {A2CapturePayload | undefined} - The typing session data or undefined if no data.
      */
-    const handleEndTypingSession = useCallback((): IKeystrokeCollection | IErrorMessage => {
+    const handleEndTypingSession = useCallback((): A2CapturePayload | undefined => {
 
         const typingData = getKeystrokeManager().endTypingSession();
         getKeystrokeManager().resetTypingData();
 
         if (!typingData.startUnixTime) {
-            return {
-                error: 'Empty typing data',
-                message: `Empty typing data for session: ${typingData.sessionID}. Skipping...`
-            };
+            console.warn(`Empty typing data for session: ${typingData.sessionID}. Skipping...`);
+            return;
         }
 
         typingData.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;

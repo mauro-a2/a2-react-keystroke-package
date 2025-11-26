@@ -1,15 +1,20 @@
 import { useState } from 'react';
-import { A2Textbox, useCipherCapture, } from '@area2-ai/a2-react-keystroke-package';
+import {
+  A2CapturePayload,
+  A2Textbox,
+  useCipherCapture
+} from '@area2-ai/a2-react-keystroke-package';
 
 export const App = () => {
   const [inputValue, setInputValue] = useState('');
-  const [capturePayload, setCapturePayload] = useState('');
+  const [capturePayload, setCapturePayload] = useState<A2CapturePayload>();
 
   const { handleEndTypingSession } = useCipherCapture();
 
   const handleData = () => {
     const payload = handleEndTypingSession();
-    setCapturePayload(JSON.stringify(payload, null, 2));
+    if (!payload) { alert('Typing data is empty'); }
+    setCapturePayload(payload);
     setInputValue(''); //* Clear input field after sending data (important to avoid inconsistencies)
   }
 
@@ -22,7 +27,7 @@ export const App = () => {
         handleEndSessionOnEnter={handleData}
       />
       <button onClick={handleData}>Send</button>
-      <pre>{capturePayload}</pre>
+      <pre>{JSON.stringify(capturePayload, null, 2)}</pre>
     </div>
   )
 }

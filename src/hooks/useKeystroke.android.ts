@@ -1,15 +1,13 @@
 import { ClipboardEvent, useCallback, useContext } from "react";
-import type { IMobileKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import { Area2Context } from "../context";
 import { getBrowserInfo, getOsInfo } from "../utils";
-import type { IAndroidKeystrokeHookTemplate, IErrorMessage } from "../interfaces";
+import type { A2CapturePayload, IAndroidKeystrokeHookTemplate } from "../interfaces";
 
 /**
  * Keystroke hook for android mobile browser
  */
-export const useMobileKeystrokeAndroid = (): IAndroidKeystrokeHookTemplate<IMobileKeystrokeCollection> => {
-
+export const useMobileKeystrokeAndroid = (): IAndroidKeystrokeHookTemplate<A2CapturePayload> => {
 
     const { getAndroidKeystrokeManager } = useContext(Area2Context);
 
@@ -60,19 +58,17 @@ export const useMobileKeystrokeAndroid = (): IAndroidKeystrokeHookTemplate<IMobi
 
 
     /**
-     * Ends the typing session and generates/returns the typing data.
-     * @returns {IMobileKeystrokeCollection | IErrorMessage} - The typing data or an error message.
+     * Ends the typing session and returns the typing data.
+     * @returns {A2CapturePayload | undefined} - The typing data or undefined if no data.
      */
-    const handleEndTypingSession = useCallback((): IMobileKeystrokeCollection | IErrorMessage => {
+    const handleEndTypingSession = useCallback((): A2CapturePayload | undefined => {
 
         const typingData = getAndroidKeystrokeManager().endTypingSession();
         getAndroidKeystrokeManager().resetTypingData();
 
         if (!typingData.startUnixTime) {
-            return {
-                error: 'Empty typing data',
-                message: `Empty typing data for session: ${typingData.sessionID}. Skipping...`
-            };
+            console.warn(`Empty typing data for session: ${typingData.sessionID}. Skipping...`);
+            return;
         }
 
         typingData.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;

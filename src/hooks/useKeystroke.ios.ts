@@ -1,15 +1,14 @@
 import { ClipboardEvent, ChangeEvent, useCallback, useContext } from "react";
-import type { IMobileKeystrokeCollection } from "@area2-ai/a2-node-keystroke-package";
 
 import { Area2Context } from "../context";
 import { getBrowserInfo, getOsInfo } from "../utils";
-import type { IErrorMessage, IiOSKeystrokeHookTemplate } from "../interfaces";
+import type { A2CapturePayload, IiOSKeystrokeHookTemplate } from "../interfaces";
 
 /**
  * Keystroke for ios mobile browser
  * @param {string} inputValue - The current value of the text input - Needed to detect auto-correct changes.
  */
-export const useMobileKeystrokeIOS = (): IiOSKeystrokeHookTemplate<IMobileKeystrokeCollection> => {
+export const useMobileKeystrokeIOS = (): IiOSKeystrokeHookTemplate<A2CapturePayload> => {
 
     const { getIosKeystrokeManager } = useContext(Area2Context);
 
@@ -79,19 +78,17 @@ export const useMobileKeystrokeIOS = (): IiOSKeystrokeHookTemplate<IMobileKeystr
     }, []);
 
     /**
-     * Ends the typing session and generates/returns the typing data.
-     * @returns {IMobileKeystrokeCollection | IErrorMessage} - The typing data or an error message.
+     * Ends the typing session and returns the typing data.
+     * @returns {A2CapturePayload | undefined} - The typing data or undefined if no data.
      */
-    const handleEndTypingSession = useCallback((): IMobileKeystrokeCollection | IErrorMessage => {
+    const handleEndTypingSession = useCallback((): A2CapturePayload | undefined => {
 
         const typingData = getIosKeystrokeManager().endTypingSession();
         getIosKeystrokeManager().resetTypingData();
 
         if (!typingData.startUnixTime) {
-            return {
-                error: 'Empty typing data',
-                message: `Empty typing data for session: ${typingData.sessionID}. Skipping...`
-            };
+            console.warn(`Empty typing data for session: ${typingData.sessionID}. Skipping...`);
+            return;
         }
 
         typingData.appContext = `${getOsInfo()} - ${getBrowserInfo()}`;
