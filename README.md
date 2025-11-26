@@ -10,7 +10,7 @@ This package provides secure and efficient collection of user keystroke data usi
 
 1. **Cross-Platform Compatibility**: Supports data collection for both desktop and mobile browsers with optimized data structures.
 2. **Privacy-Focused**: Data collection emphasizes privacy, focusing on timing information without capturing sensitive content.
-3. **A2CapturePayload Generation**: Provides the necessary payload for Area2 APIs.
+3. **A2CapturePayload Generation**: Provides the necessary payload for Area2 APIs through the `A2CapturePayload` interface.
 
 ---
 
@@ -54,7 +54,7 @@ Centralized hook for collecting keystroke data across all platforms (desktop, An
 
 | **Method** | **Description** |
 | --- | --- |
-| `handleEndTypingSession` | Ends the typing session and generates/returns the typing data. |
+| `handleEndTypingSession` | Ends the typing session and returns the typing data. |
 
 ### One Single Component: `<A2Textbox />`
 
@@ -70,42 +70,50 @@ Component that renders a text input field and generates an A2CapturePayload data
 **Example Usage**
 
 ```tsx
-import { useState } from "react";
+import { useState } from 'react';
 import {
+  A2CapturePayload,
   A2Textbox,
-  useCipherCapture,
-} from "@area2-ai/a2-react-keystroke-package";
+  useCipherCapture
+} from '@area2-ai/a2-react-keystroke-package';
 
 export const App = () => {
-  const [inputValue, setInputValue] = useState("");
-  const [capturePayload, setCapturePayload] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const [capturePayload, setCapturePayload] = useState<A2CapturePayload>();
 
   const { handleEndTypingSession } = useCipherCapture();
 
   const handleData = () => {
     const payload = handleEndTypingSession();
-    setCapturePayload(JSON.stringify(payload, null, 2));
-    setInputValue(""); //* Clear input field after sending data (important to avoid inconsistencies)
-  };
+    if (!payload) { alert('Typing data is empty'); }
+    setCapturePayload(payload);
+    setInputValue(''); //* Clear input field after sending data (important to avoid inconsistencies)
+  }
 
   return (
     <div>
       <A2Textbox
-        style={{ width: "300px" }}
+        style={{ width: '300px' }}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         handleEndSessionOnEnter={handleData}
       />
       <button onClick={handleData}>Send</button>
-      <pre>{capturePayload}</pre>
+      <pre>{JSON.stringify(capturePayload, null, 2)}</pre>
     </div>
-  );
-};
+  )
+}
 ```
 
 ---
 
 ## **Data Collection Structures**
+
+### **A2CapturePayload Interface**
+
+The `A2CapturePayload` interface is the unified structure returned by `handleEndTypingSession()`. It extends the base keystroke collection and includes both desktop and mobile-specific fields as optional properties, making it compatible with all platforms.
+
+This interface combines all possible fields from desktop and mobile data collection, where mobile-specific fields (like `emojis`, `predictionLengths`, etc.) are optional and only present when collected on mobile platforms.
 
 ### **Desktop Data**
 

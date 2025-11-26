@@ -2,14 +2,9 @@ import { ChangeEvent, ClipboardEvent } from "react";
 
 export type TargetPlatform = 'desktop' | 'ios' | 'android';
 
-export interface IErrorMessage {
-    error: string;
-    message: string;
-}
-
 //* Common interface for keystroke hook templates
 export interface IKeystrokeHookTemplate<T> {
-    handleEndTypingSession: () => T | IErrorMessage;
+    handleEndTypingSession: () => T | undefined;
 }
 
 //* Common interface for mobile keystroke hook template
