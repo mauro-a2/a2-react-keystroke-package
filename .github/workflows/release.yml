@@ -6,20 +6,23 @@ on:
       - 'v*'
 
 jobs: 
-  generate-changelog:
+  changelog:
+    name: Generate changelog
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
-          fetch-depth:  0
+          fetch-depth: 0
 
-      - name: Generate changelog
-        uses: orhun/git-cliff-action@v2
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v4
+        id: git-cliff
         with:
           config: cliff.toml
-          args: --latest --strip all
+          args: --verbose
         env:
-          OUTPUT:  CHANGELOG.md
+          OUTPUT: CHANGELOG.md
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1

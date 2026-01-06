@@ -22,7 +22,6 @@ commit_parsers = [
   { message = "^hotfix", group = "Hotfixes"},
   { message = "^doc", group = "Documentation"},
   { message = "^perf", group = "Performance"},
-  { message = "^refactor", group = "Refactoring"},
   { message = "^style", group = "Style"},
   { message = "^test", group = "Testing"},
   { message = "^chore", group = "Miscellaneous"},
