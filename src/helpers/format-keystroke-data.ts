@@ -15,27 +15,23 @@ export const formatKeystrokeData = (
 
     if (platform === 'Desktop') {
         const {
-            keyArea,
+            keyAreas,
             keyTypes,
             pressTimes,
-            qualityCheck,
             releaseTimes,
             sessionID,
             startUnixTime,
-            textStructure,
             timeZone,
             ...rest
         } = typingData as IKeystrokeCollection;
 
         formattedBody = {
-            'key_area': keyArea,
+            'key_area': keyAreas,
             'key_type': keyTypes,
             'press_times': pressTimes,
-            'quality_check': qualityCheck,
             'release_times': releaseTimes,
             'session_id': sessionID,
             'startunixtime': startUnixTime,
-            'text_structure': textStructure,
             'timezone': timeZone,
             ...rest,
         }
@@ -46,12 +42,11 @@ export const formatKeystrokeData = (
     const {
         autocorrectLengths,
         autocorrectTimes,
-        keyArea,
+        keyAreas,
         keyTypes,
         predictionLengths,
         predictionTimes,
         pressTimes,
-        qualityCheck,
         releaseTimes,
         sessionID,
         startUnixTime,
@@ -64,10 +59,9 @@ export const formatKeystrokeData = (
         'autocorrect_times': autocorrectTimes,
         'prediction_lengths': predictionLengths,
         'prediction_times': predictionTimes,
-        'key_area': keyArea,
+        'key_area': keyAreas,
         'key_type': keyTypes,
         'press_times': pressTimes,
-        'quality_check': qualityCheck,
         'release_times': releaseTimes,
         'session_id': sessionID,
         'startunixtime': startUnixTime,
